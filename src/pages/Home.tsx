@@ -1,6 +1,7 @@
+import { PropsOf } from '@chakra-ui/react';
+
 import { PostList } from '@/components/PostList';
 import { TimelineDivider } from '@/components/TimelineDivider';
-import { PropsOf } from '@chakra-ui/react';
 
 const fakeMessages: PropsOf<typeof PostList>['messages'] = [
   {

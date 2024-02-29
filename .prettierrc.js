@@ -6,7 +6,7 @@ const config = {
   singleQuote: true,
 
   plugins: ['@trivago/prettier-plugin-sort-imports'],
-  importOrder: [],
+  importOrder: ['<THIRD_PARTY_MODULES>', 'component'],
   importOrderSeparation: true,
 };
 

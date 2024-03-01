@@ -1,6 +1,6 @@
 import { AuthGateway } from '@/libs/auth/models/auth.gateway.ts';
 import { TimelineGateway } from '@/libs/timeline/models/timeline.gateway.ts';
-import { timelinesSlice } from '@/libs/timeline/slices/timelines.slice.ts';
+import { reducer as timelineRootReducer } from '@/libs/timeline/reducer.ts';
 import { configureStore, ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 
 export type Dependencies = {
@@ -8,7 +8,7 @@ export type Dependencies = {
   timelineGateway: TimelineGateway;
 };
 
-const rootReducer = timelinesSlice.reducer;
+const rootReducer = timelineRootReducer;
 
 export const createStore = (dependencies: Dependencies) =>
   configureStore({

@@ -33,6 +33,7 @@ describe('Home view model', () => {
               id: 'alice-timeline-id',
             },
           },
+          loadingTimelinesByUser: {},
         },
       }
     );
@@ -43,6 +44,31 @@ describe('Home view model', () => {
       timeline: {
         type: HomeViewModelType.EmptyTimeline,
         info: 'There is no messages yet',
+      },
+    });
+  });
+
+  test('The timeline is loading', () => {
+    const now = '2024-03-01T07:09:00.000Z';
+    const store = createTestStore(
+      {},
+      {
+        timelines: {
+          ids: [],
+          entities: {},
+          loadingTimelinesByUser: {
+            Alice: true,
+          },
+        },
+      }
+    );
+
+    const homeViewModel = selectHomeViewModel(store.getState(), () => now);
+
+    expect(homeViewModel).toEqual({
+      timeline: {
+        type: HomeViewModelType.LoadingTimeline,
+        info: 'Loading ...',
       },
     });
   });
@@ -62,6 +88,7 @@ describe('Home view model', () => {
               id: 'alice-timeline-id',
             },
           },
+          loadingTimelinesByUser: {},
         },
         messages: {
           ids: ['msg1'],
@@ -110,6 +137,7 @@ describe('Home view model', () => {
               id: 'alice-timeline-id',
             },
           },
+          loadingTimelinesByUser: {},
         },
         messages: {
           ids: ['msg1', 'msg2', 'msg3', 'msg4'],

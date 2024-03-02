@@ -1,17 +1,32 @@
 import { RootState } from '@/libs/create-store.ts';
 import { selectMessages } from '@/libs/timeline/slices/message.slice.ts';
-import { selectTimeline } from '@/libs/timeline/slices/timelines.slice.ts';
+import {
+  selectIsUserTimelineLoading,
+  selectTimeline,
+} from '@/libs/timeline/slices/timelines.slice.ts';
 import { format } from 'timeago.js';
 
 export const HomeViewModelType = {
   NoTimeline: 'NO_TIMELINE',
   EmptyTimeline: 'EMPTY_TIMELINE',
   TimelineWithMessages: 'TIMELINE_WITH_MESSAGES',
+  LoadingTimeline: 'LOADING_TIMELINE',
 } as const;
 
 export const selectHomeViewModel = (state: RootState, getNow: () => string) => {
   const now = getNow();
   const timeline = selectTimeline('alice-timeline-id', state);
+  const isUserTimelineLoading = selectIsUserTimelineLoading('Alice', state);
+
+  if (isUserTimelineLoading) {
+    return {
+      timeline: {
+        type: HomeViewModelType.LoadingTimeline,
+        info: 'Loading ...',
+      },
+    };
+  }
+
   if (!timeline) {
     return { timeline: { type: HomeViewModelType.NoTimeline } };
   }

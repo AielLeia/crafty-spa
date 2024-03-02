@@ -18,19 +18,25 @@ export class FakeTimelineGateway implements TimelineGateway {
     }
   > = new Map();
 
+  constructor(private readonly delay = 0) {}
+
   getUserTimeline({
     userId,
   }: {
     userId: string;
   }): Promise<GetUserTimelineResponse> {
-    const timelines = this.timelinesByUser.get(userId);
+    return new Promise((resolve, reject) =>
+      setTimeout(() => {
+        const timelines = this.timelinesByUser.get(userId);
 
-    if (!timelines) {
-      return Promise.reject();
-    }
+        if (!timelines) {
+          return reject();
+        }
 
-    return Promise.resolve({
-      timeline: timelines,
-    });
+        return resolve({
+          timeline: timelines,
+        });
+      }, this.delay)
+    );
   }
 }

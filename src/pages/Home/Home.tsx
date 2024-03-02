@@ -30,6 +30,9 @@ export const Home = () => {
       case HomeViewModelType.TimelineWithMessages:
         return <PostList messages={viewModel.timeline.messages} />;
 
+      case HomeViewModelType.LoadingTimeline:
+        return <Text>{viewModel.timeline.info}</Text>;
+
       default:
         return exhaustiveGuard(viewModel.timeline);
     }

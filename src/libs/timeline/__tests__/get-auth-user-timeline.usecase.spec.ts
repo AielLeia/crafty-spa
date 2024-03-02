@@ -7,7 +7,7 @@ import { getAuthUserTimeline } from '@/libs/timeline/usecases/get-auth-user-time
 import { describe, expect, test } from 'vitest';
 
 describe("Feature: Retrieving authenticated user's timeline", () => {
-  test('Example: Alice is authenticated and can see her timeline', async () => {
+  test('User is authenticated and can see her timeline', async () => {
     givenAuthenticatedUserIs('Alice');
     givenExistingTimeline({
       id: 'alice-timeline-id',
@@ -88,6 +88,4 @@ function thenTheReceivedTimelineShouldBe(expectedTimeline: {
   expectedTimeline.messages.forEach((msg) => {
     expect(selectMessage(msg.id, store.getState())).toEqual(msg);
   });
-
-  console.log(store.getState());
 }

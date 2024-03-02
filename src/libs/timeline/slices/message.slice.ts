@@ -16,3 +16,6 @@ export const messageSlice = createSlice({
 
 export const selectMessage = (id: string, state: RootState) =>
   messageAdapter.getSelectors().selectById(state.messages, id);
+
+export const selectMessages = (ids: string[], state: RootState) =>
+  ids.map((id) => selectMessage(id, state)).filter(Boolean);

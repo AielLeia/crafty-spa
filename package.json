@@ -10,7 +10,8 @@
     "format": "prettier --write src",
     "preview": "vite preview",
     "test": "vitest run",
-    "test:watch": "vitest --reporter verbose"
+    "test:watch": "vitest --reporter verbose",
+    "test:e2e": "vitest --config ./vitest.config.e2e.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.8.2",
@@ -26,6 +27,8 @@
     "timeago.js": "^4.0.2"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^14.2.1",
     "@total-typescript/ts-reset": "^0.5.1",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/react": "^18.2.56",
@@ -36,6 +39,7 @@
     "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
+    "jsdom": "^24.0.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "typescript": "^5.2.2",

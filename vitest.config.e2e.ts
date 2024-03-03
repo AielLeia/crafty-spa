@@ -2,7 +2,7 @@ import viteConfig from './vite.config';
 import { mergeConfig, defineConfig } from 'vitest/config';
 
 export default mergeConfig(
-  viteConfig,
+  viteConfig as never,
   defineConfig({
     test: {
       include: ['src/__e2e__/**/*.e2e.test.tsx'],
@@ -10,5 +10,5 @@ export default mergeConfig(
       globals: true,
       setupFiles: 'src/__e2e__/setup.ts',
     },
-  })
+  }) as never
 );

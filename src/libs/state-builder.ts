@@ -12,6 +12,7 @@ import {
   ActionCreatorWithPayload,
   createAction,
   createReducer,
+  UnknownAction,
 } from '@reduxjs/toolkit';
 
 const withAuthUser = createAction<{ userAuth: string }>('withAuthUser');
@@ -24,9 +25,10 @@ const withNotLoadingTimelineOfUser = createAction<{ user: string }>(
 );
 const withMessages = createAction<Message[]>('withMessages');
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-const initialState = rootReducer(undefined, createAction(''));
+const initialState = rootReducer(
+  undefined,
+  createAction('') as unknown as UnknownAction
+);
 
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(withAuthUser, (state, action) => {

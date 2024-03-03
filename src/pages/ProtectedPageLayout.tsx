@@ -1,11 +1,26 @@
+import { selectIsUserAuthenticated } from '@/libs/auth/reducer.ts';
 import { Box, Container, Flex, useBreakpointValue } from '@chakra-ui/react';
-import { Outlet } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { Navbar } from '@/components/layout/Navbar';
 import { Sidebar } from '@/components/layout/Sidebar';
 
-export const Layout = () => {
+export const ProtectedPageLayout = () => {
   const isDesktop = useBreakpointValue({ base: false, lg: true });
+  const isUserAuthenticated = useSelector(selectIsUserAuthenticated);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isUserAuthenticated) {
+      navigate('/login');
+    }
+  }, [isUserAuthenticated, navigate]);
+
+  if (!isUserAuthenticated) return null;
+
   return (
     <Flex
       as="section"

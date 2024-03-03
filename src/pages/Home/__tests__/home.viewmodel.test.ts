@@ -27,6 +27,7 @@ describe('Home view model', () => {
         messages: [],
         user: 'Alice',
       })
+      .withAuthUser('Alice')
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
@@ -45,6 +46,7 @@ describe('Home view model', () => {
   test('The timeline is loading', () => {
     const initialState = stateBuilder()
       .withLoadingTimelineOfUser('Alice')
+      .withAuthUser('Alice')
       .build();
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore({}, initialState);
@@ -74,6 +76,7 @@ describe('Home view model', () => {
         user: 'Alice',
         id: 'alice-timeline-id',
       })
+      .withAuthUser('Alice')
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
@@ -132,6 +135,7 @@ describe('Home view model', () => {
         user: 'Alice',
         id: 'alice-timeline-id',
       })
+      .withAuthUser('Alice')
       .build();
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore({}, initialState);

@@ -1,6 +1,6 @@
 import { Provider } from '@/Provider.tsx';
-import { FakeAuthGateway } from '@/libs/auth/infra/fake-auth.gateway.ts';
-import { createStore } from '@/libs/create-store.ts';
+import { createTestStore } from '@/libs/create-store.ts';
+import { stateBuilder } from '@/libs/state-builder.ts';
 import { FakeTimelineGateway } from '@/libs/timeline/infra/fake-timeline.gateway.ts';
 import { createRouter } from '@/router.tsx';
 import '@testing-library/jest-dom';
@@ -9,11 +9,8 @@ import { describe, expect, it } from 'vitest';
 
 describe('Get auth user timeline', () => {
   it('displays the authenticated user timeline on the home page', async () => {
-    const authGateway = new FakeAuthGateway();
-    authGateway.authUser = 'Alice';
-
     const timelineGateway = new FakeTimelineGateway(1000);
-    timelineGateway.timelinesByUser.set(authGateway.authUser, {
+    timelineGateway.timelinesByUser.set('Alice', {
       id: 'alice-timeline-id',
       user: 'Alice',
       messages: [
@@ -32,10 +29,12 @@ describe('Get auth user timeline', () => {
       ],
     });
 
-    const store = createStore({
-      timelineGateway,
-      authGateway,
-    });
+    const store = createTestStore(
+      {
+        timelineGateway,
+      },
+      stateBuilder().withAuthUser('Alice').build()
+    );
 
     const router = createRouter({ store });
 

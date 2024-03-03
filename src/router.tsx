@@ -3,10 +3,14 @@ import { Home } from '@/pages/Home';
 import { createHomeLoader } from '@/pages/Home/create-home-loader.ts';
 import { Login } from '@/pages/Login.tsx';
 import { ProtectedPageLayout } from '@/pages/ProtectedPageLayout.tsx';
+import { RedirectHome } from '@/pages/RedirectHome.tsx';
 import { createBrowserRouter } from 'react-router-dom';
 
-export const createRouter = ({ store }: { store: AppStore }) =>
-  createBrowserRouter([
+export const createRouter = (
+  { store }: { store: AppStore },
+  createRouterFn = createBrowserRouter
+) =>
+  createRouterFn([
     {
       path: 'login',
       element: <Login />,
@@ -17,12 +21,12 @@ export const createRouter = ({ store }: { store: AppStore }) =>
       children: [
         {
           index: true,
-          loader: createHomeLoader({ store }),
-          element: <Home />,
+          element: <RedirectHome />,
         },
         {
-          path: 'login',
-          element: <Login />,
+          path: 'home',
+          loader: createHomeLoader({ store }),
+          element: <Home />,
         },
       ],
     },

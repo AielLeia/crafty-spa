@@ -1,11 +1,8 @@
 import { FakeAuthGateway } from '@/libs/auth/infra/fake-auth.gateway.ts';
 import { createStore } from '@/libs/create-store.ts';
+import { stateBuilder } from '@/libs/state-builder.ts';
 import { FakeTimelineGateway } from '@/libs/timeline/infra/fake-timeline.gateway.ts';
-import { selectMessage } from '@/libs/timeline/slices/message.slice.ts';
-import {
-  selectIsUserTimelineLoading,
-  selectTimeline,
-} from '@/libs/timeline/slices/timelines.slice.ts';
+import { selectIsUserTimelineLoading } from '@/libs/timeline/slices/timelines.slice.ts';
 import { getAuthUserTimeline } from '@/libs/timeline/usecases/get-auth-user-timeline.usecase.ts';
 import { describe, expect, test } from 'vitest';
 
@@ -90,19 +87,15 @@ function thenTheReceivedTimelineShouldBe(expectedTimeline: {
   user: string;
   messages: { id: string; text: string; author: string; publishedAt: string }[];
 }) {
-  const authUserTimeline = selectTimeline(
-    expectedTimeline.id,
-    store.getState()
-  );
-  expect(authUserTimeline).toEqual({
-    id: expectedTimeline.id,
-    user: expectedTimeline.user,
-    messages: expectedTimeline.messages.map((msg) => msg.id),
-  });
-  expectedTimeline.messages.forEach((msg) => {
-    expect(selectMessage(msg.id, store.getState())).toEqual(msg);
-  });
-  expect(
-    selectIsUserTimelineLoading(expectedTimeline.user, store.getState())
-  ).toBe(false);
+  const expectedState = stateBuilder()
+    .withTimeline({
+      id: expectedTimeline.id,
+      user: expectedTimeline.user,
+      messages: expectedTimeline.messages.map((msg) => msg.id),
+    })
+    .withNotLoadingTimelineOfUser(expectedTimeline.user)
+    .withMessages(expectedTimeline.messages)
+    .build();
+
+  expect(store.getState()).toEqual(expectedState);
 }

@@ -5,6 +5,8 @@ export class FakeAuthGateway implements AuthGateway {
 
   willSucceedForGithubAuthForUser!: string;
 
+  onAuthStateChangedListener!: (authUser: AuthUser) => void;
+
   constructor(private readonly delay = 0) {}
 
   authenticateWithGoogle(): Promise<AuthUser> {
@@ -21,5 +23,13 @@ export class FakeAuthGateway implements AuthGateway {
         resolve(this.willSucceedForGithubAuthForUser);
       }, this.delay);
     });
+  }
+
+  onAuthStateChanged(listener: (user: AuthUser) => void): void {
+    this.onAuthStateChangedListener = listener;
+  }
+
+  simulateAuthStateChanged(user: string) {
+    this.onAuthStateChangedListener(user);
   }
 }

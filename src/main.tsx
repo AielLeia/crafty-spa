@@ -1,14 +1,17 @@
 import { Provider } from './Provider.tsx';
 import { FakeAuthGateway } from '@/libs/auth/infra/fake-auth.gateway.ts';
+import { FakeStorageAuthGateway } from '@/libs/auth/infra/fake-storage-auth.gateway.ts';
 import { createStore } from '@/libs/create-store.ts';
 import { FakeTimelineGateway } from '@/libs/timeline/infra/fake-timeline.gateway.ts';
 import { createRouter } from '@/router.tsx';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-const authGateway = new FakeAuthGateway(500);
-authGateway.willSucceedForGoogleAuthForUser = 'Alice';
-authGateway.willSucceedForGithubAuthForUser = 'Bob';
+const fakeAuthGateway = new FakeAuthGateway(500);
+fakeAuthGateway.willSucceedForGoogleAuthForUser = 'Alice';
+fakeAuthGateway.willSucceedForGithubAuthForUser = 'Bob';
+
+const authGateway = new FakeStorageAuthGateway(fakeAuthGateway);
 
 const timelineGateway = new FakeTimelineGateway(1000);
 timelineGateway.timelinesByUser.set('Alice', {

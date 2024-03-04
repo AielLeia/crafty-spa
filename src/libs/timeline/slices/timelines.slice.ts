@@ -7,7 +7,8 @@ import {
   getAuthUserTimeline,
   getAuthuserTimelinePending,
 } from '@/libs/timeline/usecases/get-auth-user-timeline.usecase.ts';
-import { createSlice, EntityState } from '@reduxjs/toolkit';
+import { getUserTimeline } from '@/libs/timeline/usecases/get-user-timeline.usecase.ts';
+import { createSlice, EntityState, isAnyOf } from '@reduxjs/toolkit';
 
 export type TimelinesSliceState = EntityState<Timeline, string> & {
   loadingTimelinesByUser: { [userId: string]: boolean };
@@ -21,19 +22,43 @@ export const timelinesSlice = createSlice({
   reducers: {},
   extraReducers(builder) {
     builder.addCase(getAuthuserTimelinePending, (state, action) => {
-      state.loadingTimelinesByUser[action.payload.userAuth] = true;
-    });
-    builder.addCase(getAuthUserTimeline.fulfilled, (state, action) => {
-      const timeline = action.payload;
-      timelinesAdapter.addOne(state, {
-        id: timeline.id,
-        user: timeline.user,
-        messages: timeline.messages.map((msg) => msg.id),
+      setUserTimelineLoadingState(state, {
+        userId: action.payload.userAuth,
+        loading: true,
       });
-      state.loadingTimelinesByUser[timeline.user] = false;
     });
+
+    builder.addCase(getUserTimeline.pending, (state, action) => {
+      setUserTimelineLoadingState(state, {
+        userId: action.meta.arg.userId,
+        loading: true,
+      });
+    });
+
+    builder.addMatcher(
+      isAnyOf(getAuthUserTimeline.fulfilled, getUserTimeline.fulfilled),
+      (state, action) => {
+        const timeline = action.payload;
+        timelinesAdapter.addOne(state, {
+          id: timeline.id,
+          user: timeline.user,
+          messages: timeline.messages.map((msg) => msg.id),
+        });
+        setUserTimelineLoadingState(state, {
+          userId: timeline.user,
+          loading: false,
+        });
+      }
+    );
   },
 });
+
+const setUserTimelineLoadingState = (
+  state: TimelinesSliceState,
+  { userId, loading }: { userId: string; loading: boolean }
+) => {
+  state.loadingTimelinesByUser[userId] = loading;
+};
 
 export const selectTimeline = (timelineId: string, state: RootState) =>
   timelinesAdapter

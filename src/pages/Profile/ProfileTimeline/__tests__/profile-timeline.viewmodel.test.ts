@@ -1,21 +1,24 @@
 import { createTestStore } from '@/libs/create-store.ts';
 import { stateBuilder } from '@/libs/state-builder.ts';
 import {
-  HomeViewModelType,
-  selectHomeViewModel,
-} from '@/pages/Home/home.viewmodel.ts';
+  ProfileTimelineViewModelType,
+  selectProfileTimelineViewModel,
+} from '@/pages/Profile/ProfileTimeline/profile-timeline.viewmodel.ts';
 import { describe, expect, test } from 'vitest';
 
-describe('Home view model', () => {
+describe('Profile timeline view model', () => {
   test('There is no timeline in the store', () => {
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore();
 
-    const homeViewModel = selectHomeViewModel(store.getState(), () => now);
+    const profileTimelineViewModel = selectProfileTimelineViewModel({
+      userId: 'Bob',
+      getNow: () => now,
+    })(store.getState());
 
-    expect(homeViewModel).toEqual({
+    expect(profileTimelineViewModel).toEqual({
       timeline: {
-        type: HomeViewModelType.NoTimeline,
+        type: ProfileTimelineViewModelType.NoTimeline,
       },
     });
   });
@@ -23,21 +26,23 @@ describe('Home view model', () => {
   test('There is no message in the timeline', () => {
     const initialState = stateBuilder()
       .withTimeline({
-        id: 'alice-timeline-id',
+        id: 'bob-timeline-id',
         messages: [],
-        user: 'Alice',
+        user: 'Bob',
       })
-      .withAuthUser('Alice')
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore({}, initialState);
 
-    const homeViewModel = selectHomeViewModel(store.getState(), () => now);
+    const profileTimelineViewModel = selectProfileTimelineViewModel({
+      userId: 'Bob',
+      getNow: () => now,
+    })(store.getState());
 
-    expect(homeViewModel).toEqual({
+    expect(profileTimelineViewModel).toEqual({
       timeline: {
-        type: HomeViewModelType.EmptyTimeline,
+        type: ProfileTimelineViewModelType.EmptyTimeline,
         info: 'There is no messages yet',
       },
     });
@@ -45,17 +50,19 @@ describe('Home view model', () => {
 
   test('The timeline is loading', () => {
     const initialState = stateBuilder()
-      .withLoadingTimelineOfUser('Alice')
-      .withAuthUser('Alice')
+      .withLoadingTimelineOfUser('Bob')
       .build();
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore({}, initialState);
 
-    const homeViewModel = selectHomeViewModel(store.getState(), () => now);
+    const profileTimelineViewModel = selectProfileTimelineViewModel({
+      userId: 'Bob',
+      getNow: () => now,
+    })(store.getState());
 
-    expect(homeViewModel).toEqual({
+    expect(profileTimelineViewModel).toEqual({
       timeline: {
-        type: HomeViewModelType.LoadingTimeline,
+        type: ProfileTimelineViewModelType.LoadingTimeline,
         info: 'Loading ...',
       },
     });
@@ -73,21 +80,23 @@ describe('Home view model', () => {
       ])
       .withTimeline({
         messages: ['msg1'],
-        user: 'Alice',
-        id: 'alice-timeline-id',
+        user: 'Bob',
+        id: 'bob-timeline-id',
       })
-      .withAuthUser('Alice')
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
 
     const store = createTestStore({}, initialState);
 
-    const homeViewModel = selectHomeViewModel(store.getState(), () => now);
+    const profileTimelineViewModel = selectProfileTimelineViewModel({
+      userId: 'Bob',
+      getNow: () => now,
+    })(store.getState());
 
-    expect(homeViewModel).toEqual({
+    expect(profileTimelineViewModel).toEqual({
       timeline: {
-        type: HomeViewModelType.TimelineWithMessages,
+        type: ProfileTimelineViewModelType.TimelineWithMessages,
         messages: [
           {
             id: 'msg1',
@@ -113,13 +122,13 @@ describe('Home view model', () => {
         },
         {
           id: 'msg2',
-          author: 'Alice',
-          text: 'Hello world from Alice !',
+          author: 'Bob',
+          text: 'Hello world from Bob !',
           publishedAt: '2024-02-29T07:02:00.000Z',
         },
         {
           id: 'msg3',
-          author: 'Alice',
+          author: 'Bob',
           text: 'How are you ?',
           publishedAt: '2024-02-28T07:02:00.000Z',
         },
@@ -132,19 +141,21 @@ describe('Home view model', () => {
       ])
       .withTimeline({
         messages: ['msg1', 'msg2', 'msg3'],
-        user: 'Alice',
-        id: 'alice-timeline-id',
+        user: 'Bob',
+        id: 'bob-timeline-id',
       })
-      .withAuthUser('Alice')
       .build();
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore({}, initialState);
 
-    const homeViewModel = selectHomeViewModel(store.getState(), () => now);
+    const profileTimelineViewModel = selectProfileTimelineViewModel({
+      userId: 'Bob',
+      getNow: () => now,
+    })(store.getState());
 
-    expect(homeViewModel).toEqual({
+    expect(profileTimelineViewModel).toEqual({
       timeline: {
-        type: HomeViewModelType.TimelineWithMessages,
+        type: ProfileTimelineViewModelType.TimelineWithMessages,
         messages: [
           {
             id: 'msg1',
@@ -156,17 +167,17 @@ describe('Home view model', () => {
           },
           {
             id: 'msg2',
-            userId: 'Alice',
-            username: 'Alice',
-            profilePictureUrl: 'https://picsum.photos/200?random=Alice',
-            text: 'Hello world from Alice !',
+            userId: 'Bob',
+            username: 'Bob',
+            profilePictureUrl: 'https://picsum.photos/200?random=Bob',
+            text: 'Hello world from Bob !',
             publishedAt: '1 day ago',
           },
           {
             id: 'msg3',
-            userId: 'Alice',
-            username: 'Alice',
-            profilePictureUrl: 'https://picsum.photos/200?random=Alice',
+            userId: 'Bob',
+            username: 'Bob',
+            profilePictureUrl: 'https://picsum.photos/200?random=Bob',
             text: 'How are you ?',
             publishedAt: '2 days ago',
           },

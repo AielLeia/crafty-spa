@@ -1,5 +1,10 @@
-import { PostList } from '@/components/PostList.tsx';
+import { useParams } from 'react-router-dom';
+
+import { Timeline } from '@/components/Timeline.tsx';
 
 export const ProfileTimeline = () => {
-  return <PostList messages={[]} />;
+  const params = useParams();
+  const userId = params.userId as string;
+
+  return <Timeline userId={userId} />;
 };

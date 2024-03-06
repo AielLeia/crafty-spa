@@ -24,16 +24,8 @@ describe("Feature: Retrieving authenticated user's timeline", () => {
   });
 
   test('User is authenticated and can see her timeline', async () => {
-    const {
-      whenRetrievingAuthenticatedUserTimeline,
-      givenExistingTimeline,
-      thenTheTimelineOfUserShouldBeLoading,
-      thenTheReceivedTimelineShouldBe,
-    } = fixture;
-    const { givenAuthenticatedUserIs } = authFixture;
-
-    givenAuthenticatedUserIs('Alice');
-    givenExistingTimeline({
+    authFixture.givenAuthenticatedUserIs('Alice');
+    fixture.givenExistingRemoteTimeline({
       id: 'alice-timeline-id',
       user: 'Alice',
       messages: [
@@ -52,12 +44,13 @@ describe("Feature: Retrieving authenticated user's timeline", () => {
       ],
     });
 
-    const timelineRetrieving = whenRetrievingAuthenticatedUserTimeline();
-    thenTheTimelineOfUserShouldBeLoading('Alice');
+    const timelineRetrieving =
+      fixture.whenRetrievingAuthenticatedUserTimeline();
+    fixture.thenTheTimelineOfUserShouldBeLoading('Alice');
 
     await timelineRetrieving;
 
-    thenTheReceivedTimelineShouldBe({
+    fixture.thenTheReceivedTimelineShouldBe({
       id: 'alice-timeline-id',
       user: 'Alice',
       messages: [

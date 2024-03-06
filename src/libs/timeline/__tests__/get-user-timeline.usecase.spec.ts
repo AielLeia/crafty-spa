@@ -16,14 +16,7 @@ describe("Feature: Retrieving user's timeline", () => {
   });
 
   test('User can see his timeline', async () => {
-    const {
-      whenRetrievingUserTimeline,
-      thenTheTimelineOfUserShouldBeLoading,
-      thenTheReceivedTimelineShouldBe,
-      givenExistingTimeline,
-    } = fixture;
-
-    givenExistingTimeline({
+    fixture.givenExistingRemoteTimeline({
       id: 'bob-timeline-id',
       user: 'Bob',
       messages: [
@@ -42,12 +35,12 @@ describe("Feature: Retrieving user's timeline", () => {
       ],
     });
 
-    const timelineRetrieving = whenRetrievingUserTimeline('Bob');
-    thenTheTimelineOfUserShouldBeLoading('Bob');
+    const timelineRetrieving = fixture.whenRetrievingUserTimeline('Bob');
+    fixture.thenTheTimelineOfUserShouldBeLoading('Bob');
 
     await timelineRetrieving;
 
-    thenTheReceivedTimelineShouldBe({
+    fixture.thenTheReceivedTimelineShouldBe({
       id: 'bob-timeline-id',
       user: 'Bob',
       messages: [

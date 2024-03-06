@@ -2,6 +2,7 @@ import { RootState } from '@/libs/create-store.ts';
 import { messageAdapter } from '@/libs/timeline/models/message.entity.ts';
 import { getAuthUserTimeline } from '@/libs/timeline/usecases/get-auth-user-timeline.usecase.ts';
 import { getUserTimeline } from '@/libs/timeline/usecases/get-user-timeline.usecase.ts';
+import { postMessagePending } from '@/libs/timeline/usecases/post-message.usecase.ts';
 import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 
 export const messageSlice = createSlice({
@@ -9,6 +10,10 @@ export const messageSlice = createSlice({
   initialState: messageAdapter.getInitialState(),
   reducers: {},
   extraReducers(builder) {
+    builder.addCase(postMessagePending, (state, action) => {
+      messageAdapter.addOne(state, action.payload);
+    });
+
     builder.addMatcher(
       isAnyOf(getAuthUserTimeline.fulfilled, getUserTimeline.fulfilled),
       (state, action) => {

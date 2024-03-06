@@ -35,7 +35,7 @@ const reducer = createReducer(initialState, (builder) => {
     state.auth.authUser = action.payload.userAuth;
   });
   builder.addCase(withTimeline, (state, action) => {
-    timelinesAdapter.addOne(state.timelines.timelines, action.payload);
+    timelinesAdapter.upsertOne(state.timelines.timelines, action.payload);
   });
   builder.addCase(withNotLoadingTimelineOfUser, (state, action) => {
     state.timelines.timelines.loadingTimelinesByUser[action.payload.user] =

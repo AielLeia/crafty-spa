@@ -2,7 +2,11 @@ import { FakeAuthGateway } from '@/libs/auth/infra/fake-auth.gateway.ts';
 import { onAuthStateChangedListener } from '@/libs/auth/listeners/on-auth-state-changed.listener.ts';
 import { AuthGateway } from '@/libs/auth/models/auth.gateway.ts';
 import { rootReducer } from '@/libs/root-reducer.ts';
+import { FakeMessageGateway } from '@/libs/timeline/infra/fake-message.gateway.ts';
 import { FakeTimelineGateway } from '@/libs/timeline/infra/fake-timeline.gateway.ts';
+import { RealDateProvider } from '@/libs/timeline/infra/real-date-provider.ts';
+import { DateProvider } from '@/libs/timeline/models/date-provider.ts';
+import { MessageGateway } from '@/libs/timeline/models/message.gateway.ts';
 import { TimelineGateway } from '@/libs/timeline/models/timeline.gateway.ts';
 import {
   configureStore,
@@ -14,6 +18,8 @@ import {
 export type Dependencies = {
   authGateway: AuthGateway;
   timelineGateway: TimelineGateway;
+  messageGateway: MessageGateway;
+  dateProvider: DateProvider;
 };
 
 export const createStore = (
@@ -52,9 +58,15 @@ export const createTestStore = (
   {
     authGateway = new FakeAuthGateway(),
     timelineGateway = new FakeTimelineGateway(),
+    messageGateway = new FakeMessageGateway(),
+    dateProvider = new RealDateProvider(),
   }: Partial<Dependencies> = {},
   preloadedState?: Partial<ReturnType<typeof rootReducer>>
-) => createStore({ authGateway, timelineGateway }, preloadedState);
+) =>
+  createStore(
+    { authGateway, timelineGateway, dateProvider, messageGateway },
+    preloadedState
+  );
 
 export type AppStore = Omit<ReturnType<typeof createStore>, 'getActions'>;
 export type RootState = ReturnType<typeof rootReducer>;

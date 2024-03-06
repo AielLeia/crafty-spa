@@ -30,7 +30,12 @@ export const Timeline = ({ userId }: TimelineProps) => {
         return null;
 
       case ProfileTimelineViewModelType.TimelineWithMessages:
-        return <PostList messages={viewModel.timeline.messages} />;
+        return (
+          <PostList
+            timelineId={viewModel.timeline.timelineId}
+            messages={viewModel.timeline.messages}
+          />
+        );
 
       case ProfileTimelineViewModelType.LoadingTimeline:
         return <Text>{viewModel.timeline.info}</Text>;

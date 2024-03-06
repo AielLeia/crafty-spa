@@ -44,6 +44,7 @@ describe('Profile timeline view model', () => {
       timeline: {
         type: ProfileTimelineViewModelType.EmptyTimeline,
         info: 'There is no messages yet',
+        timelineId: 'bob-timeline-id',
       },
     });
   });
@@ -97,6 +98,7 @@ describe('Profile timeline view model', () => {
     expect(profileTimelineViewModel).toEqual({
       timeline: {
         type: ProfileTimelineViewModelType.TimelineWithMessages,
+        timelineId: 'bob-timeline-id',
         messages: [
           {
             id: 'msg1',
@@ -111,20 +113,20 @@ describe('Profile timeline view model', () => {
     });
   });
 
-  test('There is multiples messages in the timeline', () => {
+  test('There is multiples messages in the timeline : message are displayed by published date desc', () => {
     const initialState = stateBuilder()
       .withMessages([
-        {
-          id: 'msg1',
-          author: 'Bob',
-          text: 'Hello world',
-          publishedAt: '2024-03-01T07:02:00.000Z',
-        },
         {
           id: 'msg2',
           author: 'Bob',
           text: 'Hello world from Bob !',
           publishedAt: '2024-02-29T07:02:00.000Z',
+        },
+        {
+          id: 'msg1',
+          author: 'Bob',
+          text: 'Hello world',
+          publishedAt: '2024-03-01T07:02:00.000Z',
         },
         {
           id: 'msg3',
@@ -140,7 +142,7 @@ describe('Profile timeline view model', () => {
         },
       ])
       .withTimeline({
-        messages: ['msg1', 'msg2', 'msg3'],
+        messages: ['msg3', 'msg2', 'msg1'],
         user: 'Bob',
         id: 'bob-timeline-id',
       })
@@ -156,6 +158,7 @@ describe('Profile timeline view model', () => {
     expect(profileTimelineViewModel).toEqual({
       timeline: {
         type: ProfileTimelineViewModelType.TimelineWithMessages,
+        timelineId: 'bob-timeline-id',
         messages: [
           {
             id: 'msg1',

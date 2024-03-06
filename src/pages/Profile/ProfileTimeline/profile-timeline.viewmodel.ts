@@ -1,5 +1,5 @@
 import { RootState } from '@/libs/create-store.ts';
-import { selectMessages } from '@/libs/timeline/slices/message.slice.ts';
+import { selectMessagesOrderedByPublicationDateDesc } from '@/libs/timeline/slices/message.slice.ts';
 import {
   selectIsUserTimelineLoading,
   selectTimelineForUser,
@@ -37,12 +37,16 @@ export const selectProfileTimelineViewModel =
       return {
         timeline: {
           type: ProfileTimelineViewModelType.EmptyTimeline,
+          timelineId: timeline.id,
           info: 'There is no messages yet',
         },
       };
     }
 
-    const messages = selectMessages(timeline.messages, state).map((msg) => ({
+    const messages = selectMessagesOrderedByPublicationDateDesc(
+      timeline.messages,
+      state
+    ).map((msg) => ({
       id: msg.id,
       userId: msg.author,
       username: msg.author,
@@ -54,6 +58,7 @@ export const selectProfileTimelineViewModel =
     return {
       timeline: {
         type: ProfileTimelineViewModelType.TimelineWithMessages,
+        timelineId: timeline.id,
         messages: messages,
       },
     };

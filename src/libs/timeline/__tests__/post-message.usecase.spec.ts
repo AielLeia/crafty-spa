@@ -23,7 +23,7 @@ describe('Feature: User can post a message on a timeline', () => {
     });
   });
 
-  test('User can post a message an empty timeline', async () => {
+  test('User can post a message on an empty timeline', async () => {
     timelinesFixture.givenNowIs(new Date('2024-03-05T10:00:00.000Z'));
     authFixture.givenAuthenticatedUserIs('Asma');
     timelinesFixture.givenTimeline({
@@ -54,6 +54,55 @@ describe('Feature: User can post a message on a timeline', () => {
           author: 'Asma',
           text: 'Hello its Asma from test',
           publishedAt: '2024-03-05T10:00:00.000Z',
+        },
+      ],
+    });
+  });
+
+  test('User can post a message on his timeline already containing messages', async () => {
+    timelinesFixture.givenNowIs(new Date('2024-03-05T11:00:00.000Z'));
+    authFixture.givenAuthenticatedUserIs('Asma');
+    timelinesFixture.givenTimeline({
+      id: 'asma-timeline-id',
+      user: 'Asma',
+      messages: [
+        {
+          id: 'msg1-id',
+          author: 'Asma',
+          text: 'Hello its Asma from test',
+          publishedAt: '2024-03-05T10:00:00.000Z',
+        },
+      ],
+    });
+
+    await timelinesFixture.whenUserPostMessage({
+      messageId: 'msg2-id',
+      timelineId: 'asma-timeline-id',
+      text: 'Hello its Asma and i love to post :)',
+    });
+
+    timelinesFixture.thenMessageShouldHaveBeenPosted({
+      id: 'msg2-id',
+      timelineId: 'asma-timeline-id',
+      text: 'Hello its Asma and i love to post :)',
+      author: 'Asma',
+      publishedAt: '2024-03-05T11:00:00.000Z',
+    });
+    timelinesFixture.thenTimelineShouldBe({
+      id: 'asma-timeline-id',
+      user: 'Asma',
+      messages: [
+        {
+          id: 'msg1-id',
+          author: 'Asma',
+          text: 'Hello its Asma from test',
+          publishedAt: '2024-03-05T10:00:00.000Z',
+        },
+        {
+          id: 'msg2-id',
+          author: 'Asma',
+          text: 'Hello its Asma and i love to post :)',
+          publishedAt: '2024-03-05T11:00:00.000Z',
         },
       ],
     });

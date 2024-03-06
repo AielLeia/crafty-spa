@@ -8,7 +8,6 @@ import {
 import { FakeMessageGateway } from '@/libs/timeline/infra/fake-message.gateway.ts';
 import { FakeTimelineGateway } from '@/libs/timeline/infra/fake-timeline.gateway.ts';
 import { StubDateProvider } from '@/libs/timeline/infra/stub-date-provider.ts';
-import { Timeline } from '@/libs/timeline/models/timeline.entity.ts';
 import { selectIsUserTimelineLoading } from '@/libs/timeline/slices/timelines.slice.ts';
 import { getAuthUserTimeline } from '@/libs/timeline/usecases/get-auth-user-timeline.usecase.ts';
 import { getUserTimeline } from '@/libs/timeline/usecases/get-user-timeline.usecase.ts';
@@ -18,7 +17,7 @@ import {
 } from '@/libs/timeline/usecases/post-message.usecase.ts';
 import { expect } from 'vitest';
 
-type ExpectedTimeline = {
+type Timeline = {
   id: string;
   user: string;
   messages: {
@@ -67,7 +66,12 @@ export const createTimelinesFixture = ({
     givenTimeline(givenTimeline: Timeline) {
       builderProvider.setState((builder) =>
         builder
-          .withTimeline(givenTimeline)
+          .withTimeline({
+            id: givenTimeline.id,
+            user: givenTimeline.user,
+            messages: givenTimeline.messages.map((msg) => msg.id),
+          })
+          .withMessages(givenTimeline.messages)
           .withNotLoadingTimelineOfUser(givenTimeline.user)
       );
     },
@@ -104,11 +108,11 @@ export const createTimelinesFixture = ({
       expect(isUserTimelineLoading).toBe(true);
     },
 
-    thenTheReceivedTimelineShouldBe(expectedTimeline: ExpectedTimeline) {
+    thenTheReceivedTimelineShouldBe(expectedTimeline: Timeline) {
       this.thenTimelineShouldBe(expectedTimeline);
     },
 
-    thenTimelineShouldBe(expectedTimeline: ExpectedTimeline) {
+    thenTimelineShouldBe(expectedTimeline: Timeline) {
       const expectedState = stateBuilder(builderProvider.getState())
         .withTimeline({
           id: expectedTimeline.id,

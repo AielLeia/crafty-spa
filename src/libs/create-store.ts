@@ -9,7 +9,9 @@ import { DateProvider } from '@/libs/timeline/models/date-provider.ts';
 import { MessageGateway } from '@/libs/timeline/models/message.gateway.ts';
 import { TimelineGateway } from '@/libs/timeline/models/timeline.gateway.ts';
 import {
+  AsyncThunk,
   configureStore,
+  isAsyncThunkAction,
   Middleware,
   ThunkDispatch,
   UnknownAction,
@@ -62,11 +64,28 @@ export const createTestStore = (
     dateProvider = new RealDateProvider(),
   }: Partial<Dependencies> = {},
   preloadedState?: Partial<ReturnType<typeof rootReducer>>
-) =>
-  createStore(
+) => {
+  const store = createStore(
     { authGateway, timelineGateway, dateProvider, messageGateway },
     preloadedState
   );
+
+  return {
+    ...store,
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    getDispatchedUseCaseArgs(useCase: AsyncThunk<any, any, any>) {
+      const pendingUseCaseAction = store
+        .getActions()
+        .find((a) => a.type === useCase.pending.toString());
+
+      if (!pendingUseCaseAction) return undefined;
+
+      if (!isAsyncThunkAction(pendingUseCaseAction)) return undefined;
+
+      return pendingUseCaseAction.meta.arg;
+    },
+  };
+};
 
 export type AppStore = Omit<ReturnType<typeof createStore>, 'getActions'>;
 export type RootState = ReturnType<typeof rootReducer>;

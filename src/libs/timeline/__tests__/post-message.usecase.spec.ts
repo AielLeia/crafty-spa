@@ -107,4 +107,38 @@ describe('Feature: User can post a message on a timeline', () => {
       ],
     });
   });
+
+  test('User try to post a message but it has failed', async () => {
+    timelinesFixture.givenNowIs(new Date('2024-03-05T10:00:00.000Z'));
+    authFixture.givenAuthenticatedUserIs('Asma');
+    timelinesFixture.givenTimeline({
+      id: 'asma-timeline-id',
+      user: 'Asma',
+      messages: [],
+    });
+    timelinesFixture.givenPostMessageCanFailWithError('Cannot post message');
+
+    await timelinesFixture.whenUserPostMessage({
+      messageId: 'msg1-id',
+      timelineId: 'asma-timeline-id',
+      text: 'Hello its Asma from test',
+    });
+
+    timelinesFixture.thenTimelineShouldBe({
+      id: 'asma-timeline-id',
+      user: 'Asma',
+      messages: [
+        {
+          id: 'msg1-id',
+          author: 'Asma',
+          text: 'Hello its Asma from test',
+          publishedAt: '2024-03-05T10:00:00.000Z',
+        },
+      ],
+      messageNotPosted: {
+        messageId: 'msg1-id',
+        errorMessage: 'Cannot post message',
+      },
+    });
+  });
 });

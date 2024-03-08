@@ -5,9 +5,11 @@ import {
   stateBuilderProvider,
   StatebuilderProvider,
 } from '@/libs/state-builder.ts';
+import { FailingMessageGateway } from '@/libs/timeline/infra/failing-message.gateway.ts';
 import { FakeMessageGateway } from '@/libs/timeline/infra/fake-message.gateway.ts';
 import { FakeTimelineGateway } from '@/libs/timeline/infra/fake-timeline.gateway.ts';
 import { StubDateProvider } from '@/libs/timeline/infra/stub-date-provider.ts';
+import { MessageGateway } from '@/libs/timeline/models/message.gateway.ts';
 import { selectIsUserTimelineLoading } from '@/libs/timeline/slices/timelines.slice.ts';
 import { getAuthUserTimeline } from '@/libs/timeline/usecases/get-auth-user-timeline.usecase.ts';
 import { getUserTimeline } from '@/libs/timeline/usecases/get-user-timeline.usecase.ts';
@@ -35,7 +37,7 @@ export const createTimelinesFixture = ({
 }) => {
   const authGateway = new FakeAuthGateway();
   const timelineGateway = new FakeTimelineGateway();
-  const messageGateway = new FakeMessageGateway();
+  let messageGateway: MessageGateway = new FakeMessageGateway();
   let expectedStateBuilder = stateBuilder();
   const dateProvider = new StubDateProvider();
   let store: AppStore;
@@ -76,6 +78,10 @@ export const createTimelinesFixture = ({
       );
     },
 
+    givenPostMessageCanFailWithError(givenErrorMessaqe: string) {
+      messageGateway = new FailingMessageGateway(givenErrorMessaqe);
+    },
+
     async whenRetrievingUserTimeline(userId: string) {
       store = createTestStore(
         { timelineGateway, authGateway },
@@ -112,18 +118,27 @@ export const createTimelinesFixture = ({
       this.thenTimelineShouldBe(expectedTimeline);
     },
 
-    thenTimelineShouldBe(expectedTimeline: Timeline) {
-      const expectedState = stateBuilder(builderProvider.getState())
+    thenTimelineShouldBe(
+      expectedTimeline: Timeline & {
+        messageNotPosted?: { messageId: string; errorMessage: string };
+      }
+    ) {
+      let expectedState = stateBuilder(builderProvider.getState())
         .withTimeline({
           id: expectedTimeline.id,
           user: expectedTimeline.user,
           messages: expectedTimeline.messages.map((msg) => msg.id),
         })
         .withNotLoadingTimelineOfUser(expectedTimeline.user)
-        .withMessages(expectedTimeline.messages)
-        .build();
+        .withMessages(expectedTimeline.messages);
 
-      expect(store.getState()).toEqual(expectedState);
+      if (expectedTimeline.messageNotPosted) {
+        expectedState = expectedState.withMessageNotPosted(
+          expectedTimeline.messageNotPosted
+        );
+      }
+
+      expect(store.getState()).toEqual(expectedState.build());
     },
 
     thenMessageShouldHaveBeenPosted(expectedPostedMessage: {
@@ -133,7 +148,9 @@ export const createTimelinesFixture = ({
       author: string;
       publishedAt: string;
     }) {
-      expect(messageGateway.lastPostedMessage).toEqual(expectedPostedMessage);
+      expect((messageGateway as FakeMessageGateway).lastPostedMessage).toEqual(
+        expectedPostedMessage
+      );
     },
   };
 };

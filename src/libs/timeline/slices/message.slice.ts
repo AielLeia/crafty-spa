@@ -24,6 +24,7 @@ export const messageSlice = createSlice({
   extraReducers(builder) {
     builder.addCase(postMessagePending, (state, action) => {
       messageAdapter.addOne(state, action.payload);
+      delete state.messagesNotPosted[action.payload.id];
     });
 
     builder.addCase(postMessage.rejected, (state, action) => {
@@ -42,6 +43,11 @@ export const messageSlice = createSlice({
 
 export const selectMessage = (id: string, state: RootState) =>
   messageAdapter.getSelectors().selectById(state.timelines.messages, id);
+
+export const selectErrorMessage = (
+  msgId: string,
+  state: RootState
+): string | undefined => state.timelines.messages.messagesNotPosted[msgId];
 
 export const selectMessagesOrderedByPublicationDateDesc = (
   ids: string[],

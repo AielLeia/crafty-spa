@@ -1,9 +1,13 @@
-import { RootState } from '@/libs/create-store.ts';
-import { selectMessagesOrderedByPublicationDateDesc } from '@/libs/timeline/slices/message.slice.ts';
+import { AppDispatch, RootState } from '@/libs/create-store.ts';
+import {
+  selectErrorMessage,
+  selectMessagesOrderedByPublicationDateDesc,
+} from '@/libs/timeline/slices/message.slice.ts';
 import {
   selectIsUserTimelineLoading,
   selectTimelineForUser,
 } from '@/libs/timeline/slices/timelines.slice.ts';
+import { postMessage } from '@/libs/timeline/usecases/post-message.usecase.ts';
 import { format } from 'timeago.js';
 
 export const ProfileTimelineViewModelType = {
@@ -13,8 +17,16 @@ export const ProfileTimelineViewModelType = {
   LoadingTimeline: 'LOADING_TIMELINE',
 } as const;
 
-export const selectProfileTimelineViewModel =
-  ({ userId, getNow }: { userId: string; getNow: () => string }) =>
+export const createProfileTimelineViewModel =
+  ({
+    userId,
+    getNow,
+    dispatch,
+  }: {
+    userId: string;
+    getNow: () => string;
+    dispatch: AppDispatch;
+  }) =>
   (state: RootState) => {
     const now = getNow();
     const timeline = selectTimelineForUser(userId, state);
@@ -46,14 +58,30 @@ export const selectProfileTimelineViewModel =
     const messages = selectMessagesOrderedByPublicationDateDesc(
       timeline.messages,
       state
-    ).map((msg) => ({
-      id: msg.id,
-      userId: msg.author,
-      username: msg.author,
-      profilePictureUrl: `https://picsum.photos/200?random=${msg.author}`,
-      text: msg.text,
-      publishedAt: format(msg.publishedAt, '', { relativeDate: now }),
-    }));
+    ).map((msg) => {
+      const errorMessage = selectErrorMessage(msg.id, state);
+      const failedToBePosted = errorMessage !== undefined;
+      const retryToPostMessage = () =>
+        dispatch(
+          postMessage({
+            messageId: msg.id,
+            timelineId: timeline.id,
+            text: msg.text,
+          })
+        );
+      return {
+        id: msg.id,
+        userId: msg.author,
+        username: msg.author,
+        profilePictureUrl: `https://picsum.photos/200?random=${msg.author}`,
+        text: msg.text,
+        publishedAt: format(msg.publishedAt, '', { relativeDate: now }),
+        failedToBePosted,
+        errorMessage,
+        backgroundColor: failedToBePosted ? 'red.50' : 'muted',
+        retryToPostMessage,
+      };
+    });
 
     return {
       timeline: {

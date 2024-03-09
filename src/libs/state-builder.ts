@@ -24,10 +24,15 @@ const withNotLoadingTimelineOfUser = createAction<{ user: string }>(
   'withNotLoadingTimelineOfUser'
 );
 const withMessages = createAction<Message[]>('withMessages');
-const withMessageNotPosted = createAction<{
-  messageId: string;
-  errorMessage: string;
-}>('withMessageNotPosted');
+const withMessageNotPosted = createAction<
+  Partial<{
+    messageId: string;
+    errorMessage: string;
+  }>
+>('withMessageNotPosted');
+const withMessageNotMessagesHavingFailedToBePosted = createAction<void>(
+  'withMessageNotMessagesHavingFailedToBePosted'
+);
 
 const initialState = rootReducer(
   undefined,
@@ -59,7 +64,12 @@ const reducer = createReducer(initialState, (builder) => {
 
   builder.addCase(withMessageNotPosted, (state, action) => {
     const { messageId, errorMessage } = action.payload;
-    state.timelines.messages.messagesNotPosted[messageId] = errorMessage;
+    if (messageId && errorMessage)
+      state.timelines.messages.messagesNotPosted[messageId] = errorMessage;
+  });
+
+  builder.addCase(withMessageNotMessagesHavingFailedToBePosted, (state) => {
+    state.timelines.messages.messagesNotPosted = {};
   });
 });
 
@@ -77,6 +87,8 @@ export const stateBuilder = (baseState = initialState) => {
     withNotLoadingTimelineOfUser: (user: string) =>
       reduce(withNotLoadingTimelineOfUser)({ user }),
     withMessages: reduce(withMessages),
+    withMessageNotMessagesHavingFailedToBePosted: () =>
+      reduce(withMessageNotMessagesHavingFailedToBePosted)(undefined),
     withMessageNotPosted: reduce(withMessageNotPosted),
     build(): RootState {
       return baseState;

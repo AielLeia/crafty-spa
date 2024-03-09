@@ -1,11 +1,12 @@
 import { exhaustiveGuard } from '@/libs/common/utils/exhaustive-guard.ts';
+import { AppDispatch } from '@/libs/create-store.ts';
 import {
   ProfileTimelineViewModelType,
-  selectProfileTimelineViewModel,
+  createProfileTimelineViewModel,
 } from '@/pages/Profile/ProfileTimeline/profile-timeline.viewmodel.ts';
 import { Text } from '@chakra-ui/react';
 import { ReactNode } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { PostList } from '@/components/PostList.tsx';
 
@@ -14,10 +15,12 @@ type TimelineProps = {
 };
 
 export const Timeline = ({ userId }: TimelineProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const viewModel = useSelector(
-    selectProfileTimelineViewModel({
+    createProfileTimelineViewModel({
       userId,
       getNow: () => new Date().toISOString(),
+      dispatch,
     })
   );
 

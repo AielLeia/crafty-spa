@@ -5,7 +5,7 @@ import {
 } from '@/libs/timeline/__tests__/timelines.fixture.ts';
 import { beforeEach, describe, test } from 'vitest';
 
-describe("Feature: Retrieving user's timeline", () => {
+describe("Feature: Retrieving users's timeline", () => {
   let fixture: TimelinesFixture;
 
   beforeEach(() => {

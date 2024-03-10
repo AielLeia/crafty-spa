@@ -8,6 +8,8 @@ import { RealDateProvider } from '@/libs/timeline/infra/real-date-provider.ts';
 import { DateProvider } from '@/libs/timeline/models/date-provider.ts';
 import { MessageGateway } from '@/libs/timeline/models/message.gateway.ts';
 import { TimelineGateway } from '@/libs/timeline/models/timeline.gateway.ts';
+import { FakeUserGateway } from '@/libs/users/infra/fake-user.gateway.ts';
+import { UserGateway } from '@/libs/users/models/user.gateway.ts';
 import {
   AsyncThunk,
   configureStore,
@@ -21,6 +23,7 @@ export type Dependencies = {
   authGateway: AuthGateway;
   timelineGateway: TimelineGateway;
   messageGateway: MessageGateway;
+  userGateway: UserGateway;
   dateProvider: DateProvider;
 };
 
@@ -61,12 +64,13 @@ export const createTestStore = (
     authGateway = new FakeAuthGateway(),
     timelineGateway = new FakeTimelineGateway(),
     messageGateway = new FakeMessageGateway(),
+    userGateway = new FakeUserGateway(),
     dateProvider = new RealDateProvider(),
   }: Partial<Dependencies> = {},
   preloadedState?: Partial<ReturnType<typeof rootReducer>>
 ) => {
   const store = createStore(
-    { authGateway, timelineGateway, dateProvider, messageGateway },
+    { authGateway, timelineGateway, dateProvider, messageGateway, userGateway },
     preloadedState
   );
 

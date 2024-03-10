@@ -29,7 +29,7 @@ const createTestAddPostFormViewModel = ({
   });
 };
 
-describe('Add post form view model', () => {
+describe('Add post form view models', () => {
   test('postMessage correctly dispatch the postMessage use case', () => {
     const store = createTestStore();
     const { postMessage } = createTestAddPostFormViewModel({

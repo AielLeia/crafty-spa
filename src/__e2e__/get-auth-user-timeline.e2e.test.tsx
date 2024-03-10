@@ -7,8 +7,8 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-describe('Get auth user timeline', () => {
-  it('displays the authenticated user timeline on the home page', async () => {
+describe('Get auth users timeline', () => {
+  it('displays the authenticated users timeline on the home page', async () => {
     const timelineGateway = new FakeTimelineGateway(1000);
     timelineGateway.timelinesByUser.set('Alice', {
       id: 'alice-timeline-id',

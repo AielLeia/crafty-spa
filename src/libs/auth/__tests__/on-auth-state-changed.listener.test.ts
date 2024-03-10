@@ -4,7 +4,7 @@ import { createTestStore } from '@/libs/create-store.ts';
 import { describe, expect, test } from 'vitest';
 
 describe('On auth state change listener', () => {
-  test('Should dispatch an userAuthenticated action when auth gateway notifies the user is authenticated', () => {
+  test('Should dispatch an userAuthenticated action when auth gateway notifies the users is authenticated', () => {
     const authGateway = new FakeAuthGateway();
     const store = createTestStore({ authGateway });
 

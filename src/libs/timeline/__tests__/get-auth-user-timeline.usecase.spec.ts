@@ -9,7 +9,7 @@ import {
 } from '@/libs/timeline/__tests__/timelines.fixture.ts';
 import { beforeEach, describe, test } from 'vitest';
 
-describe("Feature: Retrieving authenticated user's timeline", () => {
+describe("Feature: Retrieving authenticated users's timeline", () => {
   let fixture: TimelinesFixture;
   let authFixture: AuthFixture;
 

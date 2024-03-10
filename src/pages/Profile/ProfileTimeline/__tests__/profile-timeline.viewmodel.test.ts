@@ -21,7 +21,7 @@ type MessageView = {
 
 const createMessageView = ({
   id = 'msg-id',
-  userId = 'user-id',
+  userId = 'users-id',
   username = 'username',
   text = 'text',
   profilePictureUrl = 'profile-picture-url',
@@ -44,7 +44,7 @@ const createMessageView = ({
 };
 
 const createTestProfileTimelineViewModel = ({
-  userId = 'user-id',
+  userId = 'users-id',
   getNow = () => new Date().toISOString(),
   dispatch = vi.fn(),
 }: {
@@ -53,7 +53,7 @@ const createTestProfileTimelineViewModel = ({
   dispatch?: AppDispatch;
 }) => createProfileTimelineViewModel({ userId, getNow, dispatch });
 
-describe('Profile timeline view model', () => {
+describe('Profile timeline view models', () => {
   test('There is no timeline in the store', () => {
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore();

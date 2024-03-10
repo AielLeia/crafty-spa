@@ -2,6 +2,10 @@ import { AppStore } from '@/libs/create-store.ts';
 import { Home } from '@/pages/Home';
 import { createHomeLoader } from '@/pages/Home/create-home-loader.ts';
 import { Login } from '@/pages/Login.tsx';
+import { ProfileFollowers } from '@/pages/Profile/ProfileFollowers';
+import { createProfileFollowersLoader } from '@/pages/Profile/ProfileFollowers/create-profile-followers-loader.ts';
+import { ProfileFollowing } from '@/pages/Profile/ProfileFollowing';
+import { createProfileFollowingLoader } from '@/pages/Profile/ProfileFollowing/create-profile-following-loader.ts';
 import { ProfileLayout } from '@/pages/Profile/ProfileLayout.tsx';
 import { ProfileTimeline } from '@/pages/Profile/ProfileTimeline/ProfileTimeline.tsx';
 import { createProfileTimelineLoader } from '@/pages/Profile/ProfileTimeline/create-profile-timeline-loader.ts';
@@ -42,11 +46,13 @@ export const createRouter = (
             },
             {
               path: 'following',
-              element: <p>Following</p>,
+              element: <ProfileFollowing />,
+              loader: createProfileFollowingLoader({ store }),
             },
             {
               path: 'followers',
-              element: <p>Followers</p>,
+              element: <ProfileFollowers />,
+              loader: createProfileFollowersLoader({ store }),
             },
           ],
         },

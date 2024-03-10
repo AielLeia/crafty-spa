@@ -1,3 +1,4 @@
+import { RootState } from '@/libs/create-store.ts';
 import {
   Relationship,
   relationshipAdapter,
@@ -52,3 +53,25 @@ export const relationshipsSlice = createSlice({
     });
   },
 });
+
+export const selectAreFollowersLoadingOf = (of: string, state: RootState) =>
+  state.users.relationships.loadingFollowersOf[of] ?? false;
+
+export const selectFollowersOf = (of: string, state: RootState) => {
+  return relationshipAdapter
+    .getSelectors()
+    .selectAll(state.users.relationships)
+    .filter((relationship) => relationship.user === of)
+    .map((followers) => followers.follow);
+};
+
+export const selectAreFollowingLoadingOf = (of: string, state: RootState) =>
+  state.users.relationships.loadingFollowingOf[of] ?? false;
+
+export const selectFollowingOf = (of: string, state: RootState) => {
+  return relationshipAdapter
+    .getSelectors()
+    .selectAll(state.users.relationships)
+    .filter((relationship) => relationship.follow === of)
+    .map((followers) => followers.user);
+};

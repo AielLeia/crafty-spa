@@ -6,6 +6,7 @@ import { users } from '@/libs/fake-data.ts';
 import { FakeDataTimelineGateway } from '@/libs/timeline/infra/fake-data-timeline.gateway.ts';
 import { FakeMessageGateway } from '@/libs/timeline/infra/fake-message.gateway.ts';
 import { RealDateProvider } from '@/libs/timeline/infra/real-date-provider.ts';
+import { FakeDateUserGateway } from '@/libs/users/infra/fake-date-user.gateway.ts';
 import { createRouter } from '@/router.tsx';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -20,12 +21,15 @@ const timelineGateway = new FakeDataTimelineGateway();
 
 const messageGateway = new FakeMessageGateway();
 
+const userGateway = new FakeDateUserGateway();
+
 const dateProvider = new RealDateProvider();
 
 const store = createStore({
   timelineGateway,
   authGateway,
   messageGateway,
+  userGateway,
   dateProvider,
 });
 

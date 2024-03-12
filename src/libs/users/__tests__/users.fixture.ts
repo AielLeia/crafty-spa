@@ -1,83 +1,99 @@
 import { AppStore, createTestStore } from '@/libs/create-store.ts';
 import { stateBuilder } from '@/libs/state-builder.ts';
 import { FakeUserGateway } from '@/libs/users/infra/fake-user.gateway.ts';
+import { User } from '@/libs/users/models/user.entity.ts';
+import {
+  selectAreFollowersLoadingOf,
+  selectAreFollowingLoadingOf,
+} from '@/libs/users/slices/relationships.slice.ts';
 import { getUserFollowers } from '@/libs/users/usecases/get-user-followers.usecase.ts';
 import { getUserFollowing } from '@/libs/users/usecases/get-user-following.usecase.ts';
 import { expect } from 'vitest';
 
-type DslTestFollowers = {
+type UserDsl = User;
+
+type FollowersDsl = {
   of: string;
-  followers: string[];
+  followers: UserDsl[];
 };
 
-type DslTestFollowing = {
+type FollowingDsl = {
   of: string;
-  following: string[];
+  following: UserDsl[];
 };
 
 export const createUsersFixture = () => {
   let store: AppStore;
+  let currentState = stateBuilder();
   const userGateway = new FakeUserGateway();
 
   return {
-    givenExistingRemoveFollowers(givenUserFollowers: DslTestFollowers) {
+    givenExistingRemoveFollowers(givenUserFollowers: FollowersDsl) {
       userGateway.givenGetUserFollowersResponseFor({
         user: givenUserFollowers.of,
         followers: givenUserFollowers.followers,
       });
     },
 
-    givenExistingRemoveFollowing(givenUserFollowing: DslTestFollowing) {
+    givenExistingRemoveFollowing(givenUserFollowing: FollowingDsl) {
       userGateway.givenGetUserFollowingResponseFor({
         user: givenUserFollowing.of,
         following: givenUserFollowing.following,
       });
     },
 
+    givenExistingUsers(exitingUsers: UserDsl[]) {
+      currentState = currentState.withUsers(exitingUsers);
+    },
+
     async whenRetrievingFollowersOf(user: string) {
-      store = createTestStore({ userGateway });
+      store = createTestStore({ userGateway }, currentState.build());
 
       return store.dispatch(getUserFollowers({ userId: user }));
     },
 
     async whenRetrievingFollowingOf(user: string) {
-      store = createTestStore({ userGateway });
+      store = createTestStore({ userGateway }, currentState.build());
 
       return store.dispatch(getUserFollowing({ userId: user }));
     },
 
     thenFollowersShouldBeLoading({ of }: { of: string }) {
-      const expectedState = stateBuilder().withFollowersLoading({ of }).build();
+      const isLoading = selectAreFollowersLoadingOf(of, store.getState());
 
-      expect(expectedState).toEqual(store.getState());
+      expect(isLoading).toEqual(true);
     },
 
     thenFollowingShouldBeLoading({ of }: { of: string }) {
-      const expectedState = stateBuilder().withFollowingLoading({ of }).build();
+      const isLoading = selectAreFollowingLoadingOf(of, store.getState());
 
-      expect(expectedState).toEqual(store.getState());
+      expect(isLoading).toEqual(true);
     },
 
-    thenFollowersShouldBe(expectedFollowersOfUser: DslTestFollowers) {
+    thenFollowersShouldBe(expectedFollowersOfUser: FollowersDsl) {
       const expectedState = stateBuilder()
         .withFollowers({
-          ...expectedFollowersOfUser,
+          of: expectedFollowersOfUser.of,
+          followers: expectedFollowersOfUser.followers.map((f) => f.id),
         })
+        .withUsers(expectedFollowersOfUser.followers)
         .withFollowersNotLoading({ of: expectedFollowersOfUser.of })
         .build();
 
-      expect(expectedState).toEqual(store.getState());
+      expect(store.getState()).toEqual(expectedState);
     },
 
-    thenFollowingShouldBe(expectedFollowingOfUser: DslTestFollowing) {
+    thenFollowingShouldBe(expectedFollowingOfUser: FollowingDsl) {
       const expectedState = stateBuilder()
         .withFollowing({
-          ...expectedFollowingOfUser,
+          of: expectedFollowingOfUser.of,
+          following: expectedFollowingOfUser.following.map((f) => f.id),
         })
+        .withUsers(expectedFollowingOfUser.following)
         .withFollowingNotLoading({ of: expectedFollowingOfUser.of })
         .build();
 
-      expect(expectedState).toEqual(store.getState());
+      expect(store.getState()).toEqual(expectedState);
     },
   };
 };

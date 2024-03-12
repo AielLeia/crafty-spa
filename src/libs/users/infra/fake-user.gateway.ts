@@ -1,3 +1,4 @@
+import { User } from '@/libs/users/models/user.entity.ts';
 import {
   GetUserFollowersResponse,
   GetUserFollowingResponse,
@@ -41,10 +42,10 @@ export class FakeUserGateway implements UserGateway {
     followers,
   }: {
     user: string;
-    followers: string[];
+    followers: User[];
   }) {
     this.willRespondForGetUserFollowers.set(user, {
-      followers: followers.map((fId) => ({ id: fId })),
+      followers,
     });
   }
 
@@ -53,10 +54,10 @@ export class FakeUserGateway implements UserGateway {
     user,
   }: {
     user: string;
-    following: string[];
+    following: User[];
   }) {
     this.willRespondForGetUserFollowing.set(user, {
-      following: following.map((fId) => ({ id: fId })),
+      following,
     });
   }
 }

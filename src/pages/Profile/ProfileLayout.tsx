@@ -1,4 +1,8 @@
+import { RootState } from '@/libs/create-store.ts';
+import { User } from '@/libs/users/models/user.entity.ts';
+import { selectUser } from '@/libs/users/slices/user.slice.ts';
 import { Box, Heading, TabList, Tabs } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
 import { Outlet, useParams } from 'react-router-dom';
 
 import { CardContent } from '@/components/profile/CardContent';
@@ -8,6 +12,11 @@ import { NavTab } from '@/components/profile/NavTab';
 export const ProfileLayout = () => {
   const params = useParams();
   const userId = params.userId as string;
+  const user = useSelector<RootState, User>((state) =>
+    selectUser(userId, state)
+  );
+
+  if (!user) return null;
 
   return (
     <>
@@ -23,7 +32,7 @@ export const ProfileLayout = () => {
         >
           <CardContent>
             <Heading size="lg" fontWeight="extrabold" letterSpacing="tight">
-              {userId}
+              {user.username}
             </Heading>
           </CardContent>
         </CardWithAvatar>
@@ -31,8 +40,12 @@ export const ProfileLayout = () => {
       <Tabs size="lg">
         <TabList>
           <NavTab to={`/u/${userId}`}>Timeline</NavTab>
-          <NavTab to={`/u/${userId}/following`}>Following (0)</NavTab>
-          <NavTab to={`/u/${userId}/followers`}>Followers (0)</NavTab>
+          <NavTab to={`/u/${userId}/following`}>
+            Following ({user.followingCount})
+          </NavTab>
+          <NavTab to={`/u/${userId}/followers`}>
+            Followers ({user.followersCount})
+          </NavTab>
         </TabList>
       </Tabs>
 

@@ -8,6 +8,7 @@ import {
   selectTimelineForUser,
 } from '@/libs/timeline/slices/timelines.slice.ts';
 import { postMessage } from '@/libs/timeline/usecases/post-message.usecase.ts';
+import { selectUser } from '@/libs/users/slices/user.slice.ts';
 import { format } from 'timeago.js';
 
 export const ProfileTimelineViewModelType = {
@@ -58,30 +59,37 @@ export const createProfileTimelineViewModel =
     const messages = selectMessagesOrderedByPublicationDateDesc(
       timeline.messages,
       state
-    ).map((msg) => {
-      const errorMessage = selectErrorMessage(msg.id, state);
-      const failedToBePosted = errorMessage !== undefined;
-      const retryToPostMessage = () =>
-        dispatch(
-          postMessage({
-            messageId: msg.id,
-            timelineId: timeline.id,
-            text: msg.text,
-          })
-        );
-      return {
-        id: msg.id,
-        userId: msg.author,
-        username: msg.author,
-        profilePictureUrl: `https://picsum.photos/200?random=${msg.author}`,
-        text: msg.text,
-        publishedAt: format(msg.publishedAt, '', { relativeDate: now }),
-        failedToBePosted,
-        errorMessage,
-        backgroundColor: failedToBePosted ? 'red.50' : 'muted',
-        retryToPostMessage,
-      };
-    });
+    )
+      .map((msg) => {
+        const errorMessage = selectErrorMessage(msg.id, state);
+        const failedToBePosted = errorMessage !== undefined;
+        const retryToPostMessage = () =>
+          dispatch(
+            postMessage({
+              messageId: msg.id,
+              timelineId: timeline.id,
+              text: msg.text,
+            })
+          );
+
+        const author = selectUser(msg.author, state);
+
+        if (!author) return null;
+
+        return {
+          id: msg.id,
+          userId: author.id,
+          username: author.username,
+          profilePictureUrl: author.profilePicture,
+          text: msg.text,
+          publishedAt: format(msg.publishedAt, '', { relativeDate: now }),
+          failedToBePosted,
+          errorMessage,
+          backgroundColor: failedToBePosted ? 'red.50' : 'muted',
+          retryToPostMessage,
+        };
+      })
+      .filter(Boolean);
 
     return {
       timeline: {

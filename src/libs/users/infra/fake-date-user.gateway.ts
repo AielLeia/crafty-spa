@@ -1,4 +1,4 @@
-import { followersByUser } from '@/libs/fake-data.ts';
+import { followersByUser, followingByUser, users } from '@/libs/fake-data.ts';
 import {
   GetUserFollowersResponse,
   GetUserFollowingResponse,
@@ -14,13 +14,29 @@ export class FakeDateUserGateway implements UserGateway {
     return new Promise((resolve) => {
       setTimeout(() => {
         const followers = followersByUser.get(userId);
+
         if (!followers) {
           return resolve({ followers: [] });
         }
-        resolve({
-          followers: followers.map((f) => ({
-            id: f,
-          })),
+
+        return resolve({
+          followers: followers
+            .map((f) => {
+              const user = users.get(f);
+              if (!user) return null;
+
+              const followingCount = (followingByUser.get(user.id) ?? [])
+                .length;
+
+              return {
+                id: f,
+                username: user.username,
+                profilePicture: user.profilePicture,
+                followersCount: followers.length,
+                followingCount,
+              };
+            })
+            .filter(Boolean),
         });
       }, 500);
     });
@@ -32,14 +48,30 @@ export class FakeDateUserGateway implements UserGateway {
   }): Promise<GetUserFollowingResponse> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        const followers = followersByUser.get(userId);
-        if (!followers) {
+        const following = followingByUser.get(userId);
+
+        if (!following) {
           return resolve({ following: [] });
         }
-        resolve({
-          following: followers.map((f) => ({
-            id: f,
-          })),
+
+        return resolve({
+          following: following
+            .map((f) => {
+              const user = users.get(f);
+              if (!user) return null;
+
+              const followersCount = (followersByUser.get(user.id) ?? [])
+                .length;
+
+              return {
+                id: f,
+                username: user.username,
+                profilePicture: user.profilePicture,
+                followersCount,
+                followingCount: following.length,
+              };
+            })
+            .filter(Boolean),
         });
       }, 500);
     });

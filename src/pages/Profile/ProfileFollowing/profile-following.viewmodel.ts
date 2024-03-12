@@ -3,6 +3,7 @@ import {
   selectAreFollowingLoadingOf,
   selectFollowingOf,
 } from '@/libs/users/slices/relationships.slice.ts';
+import { selectUser } from '@/libs/users/slices/user.slice.ts';
 
 export const ProfileFollowingViewModelType = {
   ProfileFollowingLoading: 'PROFILE_FOLLOWING_LOADING',
@@ -19,15 +20,27 @@ export const createProfileFollowingViewModel =
       };
     }
 
-    const followers = selectFollowingOf(of, state);
+    const following = selectFollowingOf(of, state);
 
     return {
       type: ProfileFollowingViewModelType.ProfileFollowingLoaded,
-      following: followers.map((f) => ({
-        id: `${f}`,
-        username: `${f}`,
-        profilePicture: `https://picsum.photos/200?random=${f}`,
-        link: `/u/${f}`,
-      })),
+      following: following
+        .map((followId) => {
+          const user = selectUser(followId, state);
+
+          if (!user) {
+            return null;
+          }
+
+          return {
+            id: user.id,
+            username: user.username,
+            profilePicture: user.profilePicture,
+            link: `/u/${user.id}`,
+            followersCount: user.followersCount,
+            followingCount: user.followingCount,
+          };
+        })
+        .filter(Boolean),
     };
   };

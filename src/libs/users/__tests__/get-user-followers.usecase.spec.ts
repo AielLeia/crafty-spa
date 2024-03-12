@@ -11,20 +11,33 @@ describe('Feature: Getting the users followers', () => {
     usersFixture = createUsersFixture();
   });
 
-  test("Retrieving the 10 user's followers", async () => {
+  test("Retrieving the 2 user's followers", async () => {
+    usersFixture.givenExistingUsers([
+      {
+        id: 'ismael-id',
+        username: 'Ismael',
+        profilePicture: 'ismael.png',
+        followersCount: 5,
+        followingCount: 10,
+      },
+    ]);
     usersFixture.givenExistingRemoveFollowers({
       of: 'Asma',
       followers: [
-        'F1-ID',
-        'F2-ID',
-        'F3-ID',
-        'F4-ID',
-        'F5-ID',
-        'F6-ID',
-        'F7-ID',
-        'F8-ID',
-        'F9-ID',
-        'F10-ID',
+        {
+          id: 'ismael-id',
+          username: 'Ismael BG',
+          profilePicture: 'ismael-bg.png',
+          followersCount: 5,
+          followingCount: 1000,
+        },
+        {
+          id: 'aboubaker-id',
+          username: 'Aboubaker',
+          profilePicture: 'aboubaker.png',
+          followersCount: 50,
+          followingCount: 10000,
+        },
       ],
     });
 
@@ -35,16 +48,20 @@ describe('Feature: Getting the users followers', () => {
     usersFixture.thenFollowersShouldBe({
       of: 'Asma',
       followers: [
-        'F1-ID',
-        'F2-ID',
-        'F3-ID',
-        'F4-ID',
-        'F5-ID',
-        'F6-ID',
-        'F7-ID',
-        'F8-ID',
-        'F9-ID',
-        'F10-ID',
+        {
+          id: 'ismael-id',
+          username: 'Ismael BG',
+          profilePicture: 'ismael-bg.png',
+          followersCount: 5,
+          followingCount: 1000,
+        },
+        {
+          id: 'aboubaker-id',
+          username: 'Aboubaker',
+          profilePicture: 'aboubaker.png',
+          followersCount: 50,
+          followingCount: 10000,
+        },
       ],
     });
   });

@@ -17,43 +17,79 @@ describe("Feature: Retrieving users's timeline", () => {
 
   test('User can see his timeline', async () => {
     fixture.givenExistingRemoteTimeline({
-      id: 'bob-timeline-id',
-      user: 'Bob',
+      id: 'ismael-timeline-id',
+      user: {
+        id: 'ismael-id',
+        username: 'Ismael',
+        profilePicture: 'ismael.png',
+        followersCount: 5,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          text: "Hello it's bob",
-          author: 'Bob',
+          text: "Hello it's ismael",
+          author: {
+            id: 'ismael-id',
+            username: 'Ismael',
+            profilePicture: 'ismael.png',
+            followersCount: 5,
+            followingCount: 10,
+          },
           publishedAt: '2024-02-29T18:19:00.000Z',
         },
         {
           id: 'msg2-id',
-          text: "Hello it's Alice",
-          author: 'Alice',
+          text: "Hello it's Asma",
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           publishedAt: '2024-02-29T19:18:00.000Z',
         },
       ],
     });
 
-    const timelineRetrieving = fixture.whenRetrievingUserTimeline('Bob');
-    fixture.thenTheTimelineOfUserShouldBeLoading('Bob');
+    const timelineRetrieving = fixture.whenRetrievingUserTimeline('ismael-id');
+    fixture.thenTheTimelineOfUserShouldBeLoading('ismael-id');
 
     await timelineRetrieving;
 
     fixture.thenTheReceivedTimelineShouldBe({
-      id: 'bob-timeline-id',
-      user: 'Bob',
+      id: 'ismael-timeline-id',
+      user: {
+        id: 'ismael-id',
+        username: 'Ismael',
+        profilePicture: 'ismael.png',
+        followersCount: 5,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          text: "Hello it's bob",
-          author: 'Bob',
+          text: "Hello it's ismael",
+          author: {
+            id: 'ismael-id',
+            username: 'Ismael',
+            profilePicture: 'ismael.png',
+            followersCount: 5,
+            followingCount: 10,
+          },
           publishedAt: '2024-02-29T18:19:00.000Z',
         },
         {
           id: 'msg2-id',
-          text: "Hello it's Alice",
-          author: 'Alice',
+          text: "Hello it's Asma",
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           publishedAt: '2024-02-29T19:18:00.000Z',
         },
       ],

@@ -12,8 +12,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 const fakeAuthGateway = new FakeAuthGateway(500);
-fakeAuthGateway.willSucceedForGoogleAuthForUser = [...users.values()][0];
-fakeAuthGateway.willSucceedForGithubAuthForUser = [...users.values()][1];
+fakeAuthGateway.willSucceedForGoogleAuthForUser = [...users.values()][0].id;
+fakeAuthGateway.willSucceedForGithubAuthForUser = [...users.values()][1].id;
 
 const authGateway = new FakeStorageAuthGateway(fakeAuthGateway);
 

@@ -9,6 +9,7 @@ import {
   timelinesAdapter,
 } from '@/libs/timeline/models/timeline.entity.ts';
 import { relationshipAdapter } from '@/libs/users/models/relationship.entity.ts';
+import { User, usersAdapter } from '@/libs/users/models/user.entity.ts';
 import {
   ActionCreatorWithPayload,
   createAction,
@@ -53,6 +54,7 @@ const withFollowing = createAction<{
   of: string;
   following: string[];
 }>('withFollowing');
+const withUsers = createAction<User[]>('withUsers');
 
 const initialState = rootReducer(
   undefined,
@@ -127,6 +129,10 @@ const reducer = createReducer(initialState, (builder) => {
       }))
     );
   });
+
+  builder.addCase(withUsers, (state, action) => {
+    usersAdapter.addMany(state.users.users, action.payload);
+  });
 });
 
 export const stateBuilder = (baseState = initialState) => {
@@ -152,6 +158,7 @@ export const stateBuilder = (baseState = initialState) => {
     withFollowingLoading: reduce(withFollowingLoading),
     withFollowingNotLoading: reduce(withFollowingNotLoading),
     withFollowing: reduce(withFollowing),
+    withUsers: reduce(withUsers),
     build(): RootState {
       return baseState;
     },

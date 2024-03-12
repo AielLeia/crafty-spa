@@ -21,8 +21,24 @@ describe('Profile followers view model', () => {
     const state = stateBuilder()
       .withFollowers({
         of: 'Ismael',
-        followers: ['asma', 'aboubaker'],
+        followers: ['asma-id', 'aboubaker-id'],
       })
+      .withUsers([
+        {
+          id: 'asma-id',
+          username: 'Asma',
+          profilePicture: 'asma.png',
+          followersCount: 50,
+          followingCount: 1,
+        },
+        {
+          id: 'aboubaker-id',
+          username: 'Aboubaker',
+          profilePicture: 'aboubaker.png',
+          followersCount: 50,
+          followingCount: 1,
+        },
+      ])
       .build();
     const profileFollowerViewModel = createProfileFollowersViewModel({
       of: 'Ismael',
@@ -32,16 +48,20 @@ describe('Profile followers view model', () => {
       type: ProfileFollowersViewModelType.ProfileFollowersLoaded,
       followers: [
         {
-          id: 'asma',
-          username: 'asma',
-          profilePicture: 'https://picsum.photos/200?random=asma',
-          link: '/u/asma',
+          id: 'asma-id',
+          username: 'Asma',
+          profilePicture: 'asma.png',
+          link: '/u/asma-id',
+          followersCount: 50,
+          followingCount: 1,
         },
         {
-          id: 'aboubaker',
-          username: 'aboubaker',
-          profilePicture: 'https://picsum.photos/200?random=aboubaker',
-          link: '/u/aboubaker',
+          id: 'aboubaker-id',
+          username: 'Aboubaker',
+          profilePicture: 'aboubaker.png',
+          link: '/u/aboubaker-id',
+          followersCount: 50,
+          followingCount: 1,
         },
       ],
     });

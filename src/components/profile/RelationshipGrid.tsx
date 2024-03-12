@@ -32,6 +32,8 @@ export const RelationshipGrid = ({
     username: string;
     profilePicture: string;
     link: string;
+    followersCount: number;
+    followingCount: number;
   }[];
 }) => {
   return (
@@ -45,7 +47,6 @@ export const RelationshipGrid = ({
         <RelationshipCard
           key={user.id}
           {...user}
-          followersCount={42}
           isFollowedByAuthUser={false}
         />
       ))}

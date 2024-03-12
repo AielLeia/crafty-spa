@@ -59,7 +59,7 @@ describe('Profile timeline view models', () => {
     const store = createTestStore();
 
     const profileTimelineViewModel = createTestProfileTimelineViewModel({
-      userId: 'Bob',
+      userId: 'ismael-id',
       getNow: () => now,
     })(store.getState());
 
@@ -73,35 +73,35 @@ describe('Profile timeline view models', () => {
   test('There is no message in the timeline', () => {
     const initialState = stateBuilder()
       .withTimeline({
-        id: 'bob-timeline-id',
+        id: 'ismael-timeline-id',
         messages: [],
-        user: 'Bob',
+        user: 'ismael-id',
       })
       .build();
 
     const store = createTestStore({}, initialState);
 
     const profileTimelineViewModel = createTestProfileTimelineViewModel({
-      userId: 'Bob',
+      userId: 'ismael-id',
     })(store.getState());
 
     expect(profileTimelineViewModel).toEqual({
       timeline: {
         type: ProfileTimelineViewModelType.EmptyTimeline,
         info: 'There is no messages yet',
-        timelineId: 'bob-timeline-id',
+        timelineId: 'ismael-timeline-id',
       },
     });
   });
 
   test('The timeline is loading', () => {
     const initialState = stateBuilder()
-      .withLoadingTimelineOfUser('Bob')
+      .withLoadingTimelineOfUser('Ismael')
       .build();
     const store = createTestStore({}, initialState);
 
     const profileTimelineViewModel = createTestProfileTimelineViewModel({
-      userId: 'Bob',
+      userId: 'Ismael',
     })(store.getState());
 
     expect(profileTimelineViewModel).toEqual({
@@ -117,16 +117,25 @@ describe('Profile timeline view models', () => {
       .withMessages([
         {
           id: 'msg1',
-          author: 'Bob',
+          author: 'ismael-id',
           text: 'Hello world',
           publishedAt: '2024-03-01T07:02:00.000Z',
         },
       ])
       .withTimeline({
         messages: ['msg1'],
-        user: 'Bob',
-        id: 'bob-timeline-id',
+        user: 'ismael-id',
+        id: 'ismael-timeline-id',
       })
+      .withUsers([
+        {
+          id: 'ismael-id',
+          username: 'Ismael',
+          followingCount: 40,
+          followersCount: 30,
+          profilePicture: 'ismael.png',
+        },
+      ])
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
@@ -134,20 +143,20 @@ describe('Profile timeline view models', () => {
     const store = createTestStore({}, initialState);
 
     const profileTimelineViewModel = createTestProfileTimelineViewModel({
-      userId: 'Bob',
+      userId: 'ismael-id',
       getNow: () => now,
     })(store.getState());
 
     expect(profileTimelineViewModel).toMatchObject({
       timeline: {
         type: ProfileTimelineViewModelType.TimelineWithMessages,
-        timelineId: 'bob-timeline-id',
+        timelineId: 'ismael-timeline-id',
         messages: [
           createMessageView({
             id: 'msg1',
-            userId: 'Bob',
-            username: 'Bob',
-            profilePictureUrl: 'https://picsum.photos/200?random=Bob',
+            userId: 'ismael-id',
+            username: 'Ismael',
+            profilePictureUrl: 'ismael.png',
             text: 'Hello world',
             publishedAt: '7 minutes ago',
             backgroundColor: 'muted',
@@ -162,71 +171,87 @@ describe('Profile timeline view models', () => {
       .withMessages([
         {
           id: 'msg2',
-          author: 'Bob',
-          text: 'Hello world from Bob !',
+          author: 'ismael-id',
+          text: 'Hello world from Ismael !',
           publishedAt: '2024-02-29T07:02:00.000Z',
         },
         {
           id: 'msg1',
-          author: 'Bob',
+          author: 'ismael-id',
           text: 'Hello world',
           publishedAt: '2024-03-01T07:02:00.000Z',
         },
         {
           id: 'msg3',
-          author: 'Bob',
+          author: 'ismael-id',
           text: 'How are you ?',
           publishedAt: '2024-02-28T07:02:00.000Z',
         },
         {
           id: 'msg4',
-          author: 'Charles',
+          author: 'charles-id',
           text: 'Hello from Charles',
           publishedAt: '2024-02-28T07:02:00.000Z',
         },
       ])
       .withTimeline({
         messages: ['msg3', 'msg2', 'msg1'],
-        user: 'Bob',
-        id: 'bob-timeline-id',
+        user: 'ismael-id',
+        id: 'ismael-timeline-id',
       })
+      .withUsers([
+        {
+          id: 'ismael-id',
+          username: 'Ismael',
+          followingCount: 40,
+          followersCount: 30,
+          profilePicture: 'ismael.png',
+        },
+        {
+          id: 'charles-id',
+          username: 'Charles',
+          followingCount: 40,
+          followersCount: 30,
+          profilePicture: 'charles.png',
+        },
+      ])
       .build();
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore({}, initialState);
 
     const profileTimelineViewModel = createTestProfileTimelineViewModel({
-      userId: 'Bob',
+      userId: 'ismael-id',
       getNow: () => now,
     })(store.getState());
 
     expect(profileTimelineViewModel).toMatchObject({
       timeline: {
         type: ProfileTimelineViewModelType.TimelineWithMessages,
-        timelineId: 'bob-timeline-id',
+        timelineId: 'ismael-timeline-id',
         messages: [
           createMessageView({
             id: 'msg1',
-            userId: 'Bob',
-            username: 'Bob',
-            profilePictureUrl: 'https://picsum.photos/200?random=Bob',
+            userId: 'ismael-id',
+            username: 'Ismael',
+            profilePictureUrl: 'ismael.png',
             text: 'Hello world',
             publishedAt: '7 minutes ago',
             backgroundColor: 'muted',
           }),
           createMessageView({
             id: 'msg2',
-            userId: 'Bob',
-            username: 'Bob',
-            profilePictureUrl: 'https://picsum.photos/200?random=Bob',
-            text: 'Hello world from Bob !',
+            userId: 'ismael-id',
+            username: 'Ismael',
+            profilePictureUrl: 'ismael.png',
+            text: 'Hello world from Ismael !',
             publishedAt: '1 day ago',
             backgroundColor: 'muted',
           }),
           createMessageView({
             id: 'msg3',
-            userId: 'Bob',
-            username: 'Bob',
-            profilePictureUrl: 'https://picsum.photos/200?random=Bob',
+            userId: 'ismael-id',
+            username: 'Ismael',
+            profilePictureUrl: 'ismael.png',
             text: 'How are you ?',
             publishedAt: '2 days ago',
             backgroundColor: 'muted',
@@ -241,20 +266,29 @@ describe('Profile timeline view models', () => {
       .withMessages([
         {
           id: 'msg1',
-          author: 'Bob',
+          author: 'ismael-id',
           text: 'Hello world',
           publishedAt: '2024-03-01T07:02:00.000Z',
         },
       ])
       .withTimeline({
         messages: ['msg1'],
-        user: 'Bob',
-        id: 'bob-timeline-id',
+        user: 'ismael-id',
+        id: 'ismael-timeline-id',
       })
       .withMessageNotPosted({
         messageId: 'msg1',
         errorMessage: 'Cannot post message',
       })
+      .withUsers([
+        {
+          id: 'ismael-id',
+          username: 'Ismael',
+          followingCount: 40,
+          followersCount: 30,
+          profilePicture: 'ismael.png',
+        },
+      ])
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
@@ -262,20 +296,20 @@ describe('Profile timeline view models', () => {
     const store = createTestStore({}, initialState);
 
     const profileTimelineViewModel = createTestProfileTimelineViewModel({
-      userId: 'Bob',
+      userId: 'ismael-id',
       getNow: () => now,
     })(store.getState());
 
     expect(profileTimelineViewModel).toMatchObject({
       timeline: {
         type: ProfileTimelineViewModelType.TimelineWithMessages,
-        timelineId: 'bob-timeline-id',
+        timelineId: 'ismael-timeline-id',
         messages: [
           createMessageView({
             id: 'msg1',
-            userId: 'Bob',
-            username: 'Bob',
-            profilePictureUrl: 'https://picsum.photos/200?random=Bob',
+            userId: 'ismael-id',
+            username: 'Ismael',
+            profilePictureUrl: 'ismael.png',
             text: 'Hello world',
             publishedAt: '7 minutes ago',
             failedToBePosted: true,
@@ -292,20 +326,29 @@ describe('Profile timeline view models', () => {
       .withMessages([
         {
           id: 'msg1',
-          author: 'Bob',
+          author: 'ismael-id',
           text: 'Hello world',
           publishedAt: '2024-03-01T07:02:00.000Z',
         },
       ])
       .withTimeline({
         messages: ['msg1'],
-        user: 'Bob',
-        id: 'bob-timeline-id',
+        user: 'ismael-id',
+        id: 'ismael-timeline-id',
       })
       .withMessageNotPosted({
         messageId: 'msg1',
         errorMessage: 'Cannot post message',
       })
+      .withUsers([
+        {
+          id: 'ismael-id',
+          username: 'Ismael',
+          followingCount: 40,
+          followersCount: 30,
+          profilePicture: 'ismael.png',
+        },
+      ])
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
@@ -313,7 +356,7 @@ describe('Profile timeline view models', () => {
     const store = createTestStore({}, initialState);
 
     const profileTimelineViewModel = createTestProfileTimelineViewModel({
-      userId: 'Bob',
+      userId: 'ismael-id',
       getNow: () => now,
       dispatch: store.dispatch,
     })(store.getState());
@@ -327,7 +370,7 @@ describe('Profile timeline view models', () => {
     profileTimelineViewModel.timeline.messages[0].retryToPostMessage();
     expect(store.getDispatchedUseCaseArgs(postMessage)).toEqual({
       messageId: 'msg1',
-      timelineId: 'bob-timeline-id',
+      timelineId: 'ismael-timeline-id',
       text: 'Hello world',
     });
   });

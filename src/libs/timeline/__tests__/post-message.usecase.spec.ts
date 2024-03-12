@@ -25,10 +25,16 @@ describe('Feature: User can post a message on a timeline', () => {
 
   test('User can post a message on an empty timeline', async () => {
     timelinesFixture.givenNowIs(new Date('2024-03-05T10:00:00.000Z'));
-    authFixture.givenAuthenticatedUserIs('Asma');
+    authFixture.givenAuthenticatedUserIs('asma-id');
     timelinesFixture.givenTimeline({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [],
     });
 
@@ -42,16 +48,28 @@ describe('Feature: User can post a message on a timeline', () => {
       id: 'msg1-id',
       timelineId: 'asma-timeline-id',
       text: 'Hello its Asma from test',
-      author: 'Asma',
+      author: 'asma-id',
       publishedAt: '2024-03-05T10:00:00.000Z',
     });
     timelinesFixture.thenTimelineShouldBe({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          author: 'Asma',
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           text: 'Hello its Asma from test',
           publishedAt: '2024-03-05T10:00:00.000Z',
         },
@@ -61,14 +79,26 @@ describe('Feature: User can post a message on a timeline', () => {
 
   test('User can post a message on his timeline already containing messages', async () => {
     timelinesFixture.givenNowIs(new Date('2024-03-05T11:00:00.000Z'));
-    authFixture.givenAuthenticatedUserIs('Asma');
+    authFixture.givenAuthenticatedUserIs('asma-id');
     timelinesFixture.givenTimeline({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          author: 'Asma',
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           text: 'Hello its Asma from test',
           publishedAt: '2024-03-05T10:00:00.000Z',
         },
@@ -85,22 +115,40 @@ describe('Feature: User can post a message on a timeline', () => {
       id: 'msg2-id',
       timelineId: 'asma-timeline-id',
       text: 'Hello its Asma and i love to post :)',
-      author: 'Asma',
+      author: 'asma-id',
       publishedAt: '2024-03-05T11:00:00.000Z',
     });
     timelinesFixture.thenTimelineShouldBe({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          author: 'Asma',
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           text: 'Hello its Asma from test',
           publishedAt: '2024-03-05T10:00:00.000Z',
         },
         {
           id: 'msg2-id',
-          author: 'Asma',
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           text: 'Hello its Asma and i love to post :)',
           publishedAt: '2024-03-05T11:00:00.000Z',
         },
@@ -110,10 +158,16 @@ describe('Feature: User can post a message on a timeline', () => {
 
   test('User try to post a message but it has failed', async () => {
     timelinesFixture.givenNowIs(new Date('2024-03-05T10:00:00.000Z'));
-    authFixture.givenAuthenticatedUserIs('Asma');
+    authFixture.givenAuthenticatedUserIs('asma-id');
     timelinesFixture.givenTimeline({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [],
     });
     timelinesFixture.givenPostMessageCanFailWithError('Cannot post message');
@@ -126,11 +180,23 @@ describe('Feature: User can post a message on a timeline', () => {
 
     timelinesFixture.thenTimelineShouldBe({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          author: 'Asma',
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           text: 'Hello its Asma from test',
           publishedAt: '2024-03-05T10:00:00.000Z',
         },
@@ -144,14 +210,26 @@ describe('Feature: User can post a message on a timeline', () => {
 
   test('User successfully retries to post a message', async () => {
     timelinesFixture.givenNowIs(new Date('2024-03-05T10:00:00.000Z'));
-    authFixture.givenAuthenticatedUserIs('Asma');
+    authFixture.givenAuthenticatedUserIs('asma-id');
     timelinesFixture.givenTimeline({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          author: 'Asma',
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           text: 'Hello its Asma from test',
           publishedAt: '2024-03-05T09:59:00.000Z',
         },
@@ -170,11 +248,23 @@ describe('Feature: User can post a message on a timeline', () => {
 
     timelinesFixture.thenTimelineShouldBe({
       id: 'asma-timeline-id',
-      user: 'Asma',
+      user: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+        followersCount: 42,
+        followingCount: 10,
+      },
       messages: [
         {
           id: 'msg1-id',
-          author: 'Asma',
+          author: {
+            id: 'asma-id',
+            username: 'Asma',
+            profilePicture: 'asma.png',
+            followersCount: 42,
+            followingCount: 10,
+          },
           text: 'Hello its Asma from test',
           publishedAt: '2024-03-05T10:00:00.000Z',
         },

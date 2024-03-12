@@ -1,6 +1,7 @@
 import { AppDispatch, createTestStore } from '@/libs/create-store.ts';
 import { stateBuilder } from '@/libs/state-builder.ts';
 import { postMessage } from '@/libs/timeline/usecases/post-message.usecase.ts';
+import { buildUser } from '@/libs/users/__tests__/user.builder.ts';
 import {
   ProfileTimelineViewModelType,
   createProfileTimelineViewModel,
@@ -113,6 +114,11 @@ describe('Profile timeline view models', () => {
   });
 
   test('There is one message in the timeline', () => {
+    const ismael = buildUser({
+      id: 'ismael-id',
+      username: 'Ismael',
+      profilePicture: 'ismael.png',
+    });
     const initialState = stateBuilder()
       .withMessages([
         {
@@ -127,15 +133,7 @@ describe('Profile timeline view models', () => {
         user: 'ismael-id',
         id: 'ismael-timeline-id',
       })
-      .withUsers([
-        {
-          id: 'ismael-id',
-          username: 'Ismael',
-          followingCount: 40,
-          followersCount: 30,
-          profilePicture: 'ismael.png',
-        },
-      ])
+      .withUsers([ismael])
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
@@ -167,6 +165,16 @@ describe('Profile timeline view models', () => {
   });
 
   test('There is multiples messages in the timeline : message are displayed by published date desc', () => {
+    const ismael = buildUser({
+      id: 'ismael-id',
+      username: 'Ismael',
+      profilePicture: 'ismael.png',
+    });
+    const charles = buildUser({
+      id: 'charles-id',
+      username: 'Charles',
+      profilePicture: 'charles.png',
+    });
     const initialState = stateBuilder()
       .withMessages([
         {
@@ -199,22 +207,7 @@ describe('Profile timeline view models', () => {
         user: 'ismael-id',
         id: 'ismael-timeline-id',
       })
-      .withUsers([
-        {
-          id: 'ismael-id',
-          username: 'Ismael',
-          followingCount: 40,
-          followersCount: 30,
-          profilePicture: 'ismael.png',
-        },
-        {
-          id: 'charles-id',
-          username: 'Charles',
-          followingCount: 40,
-          followersCount: 30,
-          profilePicture: 'charles.png',
-        },
-      ])
+      .withUsers([ismael, charles])
       .build();
     const now = '2024-03-01T07:09:00.000Z';
     const store = createTestStore({}, initialState);
@@ -262,6 +255,11 @@ describe('Profile timeline view models', () => {
   });
 
   test('The message could not have been posted', () => {
+    const ismael = buildUser({
+      id: 'ismael-id',
+      username: 'Ismael',
+      profilePicture: 'ismael.png',
+    });
     const initialState = stateBuilder()
       .withMessages([
         {
@@ -280,15 +278,7 @@ describe('Profile timeline view models', () => {
         messageId: 'msg1',
         errorMessage: 'Cannot post message',
       })
-      .withUsers([
-        {
-          id: 'ismael-id',
-          username: 'Ismael',
-          followingCount: 40,
-          followersCount: 30,
-          profilePicture: 'ismael.png',
-        },
-      ])
+      .withUsers([ismael])
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';
@@ -322,6 +312,9 @@ describe('Profile timeline view models', () => {
   });
 
   test('The message could not posted can be retried', () => {
+    const ismael = buildUser({
+      id: 'ismael-id',
+    });
     const initialState = stateBuilder()
       .withMessages([
         {
@@ -340,15 +333,7 @@ describe('Profile timeline view models', () => {
         messageId: 'msg1',
         errorMessage: 'Cannot post message',
       })
-      .withUsers([
-        {
-          id: 'ismael-id',
-          username: 'Ismael',
-          followingCount: 40,
-          followersCount: 30,
-          profilePicture: 'ismael.png',
-        },
-      ])
+      .withUsers([ismael])
       .build();
 
     const now = '2024-03-01T07:09:00.000Z';

@@ -3,6 +3,7 @@ import {
   createTimelinesFixture,
   TimelinesFixture,
 } from '@/libs/timeline/__tests__/timelines.fixture.ts';
+import { buildUser } from '@/libs/users/__tests__/user.builder.ts';
 import { beforeEach, describe, test } from 'vitest';
 
 describe("Feature: Retrieving users's timeline", () => {
@@ -16,38 +17,31 @@ describe("Feature: Retrieving users's timeline", () => {
   });
 
   test('User can see his timeline', async () => {
+    const ismael = buildUser({
+      id: 'ismael-id',
+      username: 'Ismael',
+      profilePicture: 'ismael.png',
+    });
+    const asma = buildUser({
+      id: 'asma-id',
+      username: 'Asma',
+      profilePicture: 'asma.png',
+    });
+
     fixture.givenExistingRemoteTimeline({
       id: 'ismael-timeline-id',
-      user: {
-        id: 'ismael-id',
-        username: 'Ismael',
-        profilePicture: 'ismael.png',
-        followersCount: 5,
-        followingCount: 10,
-      },
+      user: ismael,
       messages: [
         {
           id: 'msg1-id',
           text: "Hello it's ismael",
-          author: {
-            id: 'ismael-id',
-            username: 'Ismael',
-            profilePicture: 'ismael.png',
-            followersCount: 5,
-            followingCount: 10,
-          },
+          author: ismael,
           publishedAt: '2024-02-29T18:19:00.000Z',
         },
         {
           id: 'msg2-id',
           text: "Hello it's Asma",
-          author: {
-            id: 'asma-id',
-            username: 'Asma',
-            profilePicture: 'asma.png',
-            followersCount: 42,
-            followingCount: 10,
-          },
+          author: asma,
           publishedAt: '2024-02-29T19:18:00.000Z',
         },
       ],
@@ -60,36 +54,18 @@ describe("Feature: Retrieving users's timeline", () => {
 
     fixture.thenTheReceivedTimelineShouldBe({
       id: 'ismael-timeline-id',
-      user: {
-        id: 'ismael-id',
-        username: 'Ismael',
-        profilePicture: 'ismael.png',
-        followersCount: 5,
-        followingCount: 10,
-      },
+      user: ismael,
       messages: [
         {
           id: 'msg1-id',
           text: "Hello it's ismael",
-          author: {
-            id: 'ismael-id',
-            username: 'Ismael',
-            profilePicture: 'ismael.png',
-            followersCount: 5,
-            followingCount: 10,
-          },
+          author: ismael,
           publishedAt: '2024-02-29T18:19:00.000Z',
         },
         {
           id: 'msg2-id',
           text: "Hello it's Asma",
-          author: {
-            id: 'asma-id',
-            username: 'Asma',
-            profilePicture: 'asma.png',
-            followersCount: 42,
-            followingCount: 10,
-          },
+          author: asma,
           publishedAt: '2024-02-29T19:18:00.000Z',
         },
       ],

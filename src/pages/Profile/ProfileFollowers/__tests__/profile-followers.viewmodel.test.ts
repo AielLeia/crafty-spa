@@ -1,4 +1,5 @@
 ﻿import { stateBuilder } from '@/libs/state-builder.ts';
+import { buildUser } from '@/libs/users/__tests__/user.builder.ts';
 import {
   createProfileFollowersViewModel,
   ProfileFollowersViewModelType,
@@ -18,27 +19,24 @@ describe('Profile followers view model', () => {
   });
 
   test('User followers are loaded', () => {
+    const aboubaker = buildUser({
+      id: 'aboubaker-id',
+      username: 'Aboubaker',
+      profilePicture: 'aboubaker.png',
+      followersCount: 50,
+    });
+    const asma = buildUser({
+      id: 'asma-id',
+      username: 'Asma',
+      profilePicture: 'asma.png',
+      followersCount: 50,
+    });
     const state = stateBuilder()
       .withFollowers({
         of: 'Ismael',
         followers: ['asma-id', 'aboubaker-id'],
       })
-      .withUsers([
-        {
-          id: 'asma-id',
-          username: 'Asma',
-          profilePicture: 'asma.png',
-          followersCount: 50,
-          followingCount: 1,
-        },
-        {
-          id: 'aboubaker-id',
-          username: 'Aboubaker',
-          profilePicture: 'aboubaker.png',
-          followersCount: 50,
-          followingCount: 1,
-        },
-      ])
+      .withUsers([asma, aboubaker])
       .build();
     const profileFollowerViewModel = createProfileFollowersViewModel({
       of: 'Ismael',
@@ -53,7 +51,6 @@ describe('Profile followers view model', () => {
           profilePicture: 'asma.png',
           link: '/u/asma-id',
           followersCount: 50,
-          followingCount: 1,
         },
         {
           id: 'aboubaker-id',
@@ -61,7 +58,6 @@ describe('Profile followers view model', () => {
           profilePicture: 'aboubaker.png',
           link: '/u/aboubaker-id',
           followersCount: 50,
-          followingCount: 1,
         },
       ],
     });

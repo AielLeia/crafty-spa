@@ -1,14 +1,21 @@
 import { RootState } from '@/libs/create-store.ts';
 import { getAuthUserTimeline } from '@/libs/timeline/usecases/get-auth-user-timeline.usecase.ts';
 import { getUserTimeline } from '@/libs/timeline/usecases/get-user-timeline.usecase.ts';
-import { usersAdapter } from '@/libs/users/models/user.entity.ts';
+import { User, usersAdapter } from '@/libs/users/models/user.entity.ts';
 import { getUserFollowers } from '@/libs/users/usecases/get-user-followers.usecase.ts';
 import { getUserFollowing } from '@/libs/users/usecases/get-user-following.usecase.ts';
-import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { getUser } from '@/libs/users/usecases/get-user.usecase.ts';
+import { createSlice, EntityState, isAnyOf } from '@reduxjs/toolkit';
+
+export type UserSliceState = EntityState<User, string> & {
+  loadingUsers: { [userId: string]: boolean };
+};
 
 export const userSlice = createSlice({
   name: 'users',
-  initialState: usersAdapter.getInitialState(),
+  initialState: usersAdapter.getInitialState({
+    loadingUsers: {},
+  }) as UserSliceState,
   reducers: {},
 
   extraReducers(builder) {
@@ -18,6 +25,18 @@ export const userSlice = createSlice({
 
     builder.addCase(getUserFollowing.fulfilled, (state, action) => {
       usersAdapter.upsertMany(state, action.payload.following);
+    });
+
+    builder.addCase(getUser.pending, (state, action) => {
+      const { userId } = action.meta.arg;
+      state.loadingUsers[userId] = true;
+    });
+
+    builder.addCase(getUser.fulfilled, (state, action) => {
+      const { userId } = action.meta.arg;
+      state.loadingUsers[userId] = false;
+
+      usersAdapter.upsertOne(state, action.payload);
     });
 
     builder.addMatcher(
@@ -34,3 +53,6 @@ export const userSlice = createSlice({
 
 export const selectUser = (userId: string, state: RootState) =>
   usersAdapter.getSelectors().selectById(state.users.users, userId);
+
+export const selectIsUserLoading = (userId: string, state: RootState) =>
+  state.users.users.loadingUsers[userId] ?? false;

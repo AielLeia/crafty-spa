@@ -9,6 +9,7 @@ import { createProfileFollowingLoader } from '@/pages/Profile/ProfileFollowing/c
 import { ProfileLayout } from '@/pages/Profile/ProfileLayout.tsx';
 import { ProfileTimeline } from '@/pages/Profile/ProfileTimeline/ProfileTimeline.tsx';
 import { createProfileTimelineLoader } from '@/pages/Profile/ProfileTimeline/create-profile-timeline-loader.ts';
+import { createProfileLoader } from '@/pages/Profile/create-profile-loader.ts';
 import { ProtectedPageLayout } from '@/pages/ProtectedPageLayout.tsx';
 import { RedirectHome } from '@/pages/RedirectHome.tsx';
 import { createBrowserRouter } from 'react-router-dom';
@@ -38,6 +39,7 @@ export const createRouter = (
         {
           path: 'u/:userId',
           element: <ProfileLayout />,
+          loader: createProfileLoader({ store }),
           children: [
             {
               index: true,

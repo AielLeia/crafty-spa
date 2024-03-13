@@ -55,6 +55,10 @@ const withFollowing = createAction<{
   following: string[];
 }>('withFollowing');
 const withUsers = createAction<User[]>('withUsers');
+const withNotLoadingUser = createAction<{ userId: string }>(
+  'withNotLoadingUser'
+);
+const withLoadingUser = createAction<{ userId: string }>('withLoadingUser');
 
 const initialState = rootReducer(
   undefined,
@@ -78,6 +82,14 @@ const reducer = createReducer(initialState, (builder) => {
   builder.addCase(withLoadingTimelineOfUser, (state, action) => {
     state.timelines.timelines.loadingTimelinesByUser[action.payload.user] =
       true;
+  });
+
+  builder.addCase(withNotLoadingUser, (state, action) => {
+    state.users.users.loadingUsers[action.payload.userId] = false;
+  });
+
+  builder.addCase(withLoadingUser, (state, action) => {
+    state.users.users.loadingUsers[action.payload.userId] = true;
   });
 
   builder.addCase(withMessages, (state, action) => {
@@ -159,6 +171,8 @@ export const stateBuilder = (baseState = initialState) => {
     withFollowingNotLoading: reduce(withFollowingNotLoading),
     withFollowing: reduce(withFollowing),
     withUsers: reduce(withUsers),
+    withNotLoadingUser: reduce(withNotLoadingUser),
+    withLoadingUser: reduce(withLoadingUser),
     build(): RootState {
       return baseState;
     },

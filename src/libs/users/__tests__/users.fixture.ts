@@ -6,8 +6,10 @@ import {
   selectAreFollowersLoadingOf,
   selectAreFollowingLoadingOf,
 } from '@/libs/users/slices/relationships.slice.ts';
+import { selectIsUserLoading } from '@/libs/users/slices/user.slice.ts';
 import { getUserFollowers } from '@/libs/users/usecases/get-user-followers.usecase.ts';
 import { getUserFollowing } from '@/libs/users/usecases/get-user-following.usecase.ts';
+import { getUser } from '@/libs/users/usecases/get-user.usecase.ts';
 import { expect } from 'vitest';
 
 type UserDsl = User;
@@ -46,6 +48,10 @@ export const createUsersFixture = () => {
       currentState = currentState.withUsers(exitingUsers);
     },
 
+    givenExistingRemoveUser(exitingUser: UserDsl) {
+      userGateway.users.set(exitingUser.id, exitingUser);
+    },
+
     async whenRetrievingFollowersOf(user: string) {
       store = createTestStore({ userGateway }, currentState.build());
 
@@ -58,7 +64,13 @@ export const createUsersFixture = () => {
       return store.dispatch(getUserFollowing({ userId: user }));
     },
 
-    thenFollowersShouldBeLoading({ of }: { of: string }) {
+    async whenRetrievingUser(userId: string) {
+      store = createTestStore({ userGateway });
+
+      return store.dispatch(getUser({ userId }));
+    },
+
+    thenFollowersShouldBeLoading: function ({ of }: { of: string }) {
       const isLoading = selectAreFollowersLoadingOf(of, store.getState());
 
       expect(isLoading).toEqual(true);
@@ -68,6 +80,12 @@ export const createUsersFixture = () => {
       const isLoading = selectAreFollowingLoadingOf(of, store.getState());
 
       expect(isLoading).toEqual(true);
+    },
+
+    thenUserShouldBeLoading(userId: string) {
+      const isUserLoading = selectIsUserLoading(userId, store.getState());
+
+      expect(isUserLoading).toBe(true);
     },
 
     thenFollowersShouldBe(expectedFollowersOfUser: FollowersDsl) {
@@ -91,6 +109,15 @@ export const createUsersFixture = () => {
         })
         .withUsers(expectedFollowingOfUser.following)
         .withFollowingNotLoading({ of: expectedFollowingOfUser.of })
+        .build();
+
+      expect(store.getState()).toEqual(expectedState);
+    },
+
+    thenRetrievedUserIs(expectedUser: UserDsl) {
+      const expectedState = stateBuilder()
+        .withUsers([expectedUser])
+        .withNotLoadingUser({ userId: expectedUser.id })
         .build();
 
       expect(store.getState()).toEqual(expectedState);

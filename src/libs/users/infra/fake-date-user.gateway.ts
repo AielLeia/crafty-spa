@@ -1,5 +1,6 @@
 import { followersByUser, followingByUser, users } from '@/libs/fake-data.ts';
 import {
+  GetUser,
   GetUserFollowersResponse,
   GetUserFollowingResponse,
   UserGateway,
@@ -41,6 +42,7 @@ export class FakeDateUserGateway implements UserGateway {
       }, 500);
     });
   }
+
   getUserFollowing({
     userId,
   }: {
@@ -73,6 +75,23 @@ export class FakeDateUserGateway implements UserGateway {
             })
             .filter(Boolean),
         });
+      }, 500);
+    });
+  }
+
+  getUser({ userId }: { userId: string }): Promise<GetUser> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        const user = users.get(userId);
+
+        if (!user) {
+          return reject();
+        }
+
+        const followingCount = (followingByUser.get(user.id) ?? []).length;
+        const followersCount = (followersByUser.get(user.id) ?? []).length;
+
+        return resolve({ user: { ...user, followingCount, followersCount } });
       }, 500);
     });
   }

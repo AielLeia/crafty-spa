@@ -1,5 +1,9 @@
 import { User } from '@/libs/users/models/user.entity.ts';
 
+export type GetUser = {
+  user: User;
+};
+
 export type GetUserFollowersResponse = {
   followers: User[];
 };
@@ -20,4 +24,6 @@ export interface UserGateway {
   }: {
     userId: string;
   }): Promise<GetUserFollowingResponse>;
+
+  getUser({ userId }: { userId: string }): Promise<GetUser>;
 }

@@ -41,10 +41,10 @@ export const ProfileLayout = () => {
         <TabList>
           <NavTab to={`/u/${userId}`}>Timeline</NavTab>
           <NavTab to={`/u/${userId}/following`}>
-            Following ({user.followingCount})
+            Following ({user?.followingCount ?? 0})
           </NavTab>
           <NavTab to={`/u/${userId}/followers`}>
-            Followers ({user.followersCount})
+            Followers ({user?.followersCount ?? 0})
           </NavTab>
         </TabList>
       </Tabs>

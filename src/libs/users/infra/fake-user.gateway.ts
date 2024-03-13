@@ -1,5 +1,6 @@
 import { User } from '@/libs/users/models/user.entity.ts';
 import {
+  GetUser,
   GetUserFollowersResponse,
   GetUserFollowingResponse,
   UserGateway,
@@ -8,6 +9,7 @@ import {
 export class FakeUserGateway implements UserGateway {
   willRespondForGetUserFollowers = new Map<string, GetUserFollowersResponse>();
   willRespondForGetUserFollowing = new Map<string, GetUserFollowingResponse>();
+  users = new Map<string, User>();
 
   getUserFollowers({
     userId,
@@ -35,6 +37,16 @@ export class FakeUserGateway implements UserGateway {
     }
 
     return Promise.resolve(response);
+  }
+
+  getUser({ userId }: { userId: string }): Promise<GetUser> {
+    const user = this.users.get(userId);
+
+    if (!user) {
+      return Promise.reject();
+    }
+
+    return Promise.resolve({ user });
   }
 
   givenGetUserFollowersResponseFor({

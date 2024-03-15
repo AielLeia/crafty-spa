@@ -2,6 +2,7 @@ import { FakeAuthGateway } from '@/libs/auth/infra/fake-auth.gateway.ts';
 import { onAuthStateChangedListener } from '@/libs/auth/listeners/on-auth-state-changed.listener.ts';
 import { AuthGateway } from '@/libs/auth/models/auth.gateway.ts';
 import { FakeNotificationGateway } from '@/libs/notifications/infra/fake-notification.gateway.ts';
+import { getNotificationsOnUserAuthenticatedListener } from '@/libs/notifications/listeners/get-notifications-on-user-authenticated.listener.ts';
 import { NotificationGateway } from '@/libs/notifications/models/notification.gateway.ts';
 import { rootReducer } from '@/libs/root-reducer.ts';
 import { FakeMessageGateway } from '@/libs/timeline/infra/fake-message.gateway.ts';
@@ -20,6 +21,8 @@ import {
   ThunkDispatch,
   UnknownAction,
 } from '@reduxjs/toolkit';
+
+export const EMPTY_ARGS = 'EMPTY_ARGS' as const;
 
 export type Dependencies = {
   authGateway: AuthGateway;
@@ -47,7 +50,10 @@ export const createStore = (
         thunk: {
           extraArgument: dependencies,
         },
-      }).prepend(logActionMiddleware);
+      }).prepend(
+        logActionMiddleware,
+        getNotificationsOnUserAuthenticatedListener()
+      );
     },
     preloadedState,
   });
@@ -97,7 +103,7 @@ export const createTestStore = (
 
       if (!isAsyncThunkAction(pendingUseCaseAction)) return undefined;
 
-      return pendingUseCaseAction.meta.arg;
+      return pendingUseCaseAction.meta.arg ?? EMPTY_ARGS;
     },
   };
 };

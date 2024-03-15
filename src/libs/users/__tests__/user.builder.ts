@@ -6,6 +6,7 @@ export const buildUser = ({
   profilePicture = 'user.png',
   followersCount = 40,
   followingCount = 50,
+  isFollowedByAuthUser = false,
 }: Partial<User> = {}): User => {
   return {
     id,
@@ -13,5 +14,6 @@ export const buildUser = ({
     profilePicture,
     followersCount,
     followingCount,
+    isFollowedByAuthUser,
   };
 };

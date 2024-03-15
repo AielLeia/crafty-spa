@@ -1,8 +1,12 @@
 import { CardWithAvatar } from './CardWithAvatar';
 import { FollowersCount } from './FollowersCount';
 import { UserInfo } from './UserInfo';
+import { AppDispatch } from '@/libs/create-store.ts';
+import { followUser } from '@/libs/users/usecases/follow-user.usecase.ts';
+import { unfollowUser } from '@/libs/users/usecases/unfollow-user.usecase.ts';
 import { Button, HStack, useMultiStyleConfig } from '@chakra-ui/react';
 import { HiOutlineUserPlus } from 'react-icons/hi2';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 export const RelationshipCard = (user: {
@@ -13,6 +17,7 @@ export const RelationshipCard = (user: {
   followersCount: number;
   link: string;
 }) => {
+  const dispatch = useDispatch<AppDispatch>();
   const buttonProps = {
     variant: 'outline',
     colorScheme: 'blue',
@@ -21,6 +26,14 @@ export const RelationshipCard = (user: {
     width: 'full',
   };
   const buttonStyles = useMultiStyleConfig('Button', buttonProps);
+
+  const handleFollowUser = () => {
+    dispatch(followUser({ followingId: user.id }));
+  };
+
+  const handleUnfollowUser = () => {
+    dispatch(unfollowUser({ followingId: user.id }));
+  };
 
   return (
     <CardWithAvatar
@@ -49,9 +62,14 @@ export const RelationshipCard = (user: {
                 content: "'Unfollow'",
               },
             }}
+            onClick={handleUnfollowUser}
           />
         ) : (
-          <Button {...buttonProps} leftIcon={<HiOutlineUserPlus />}>
+          <Button
+            {...buttonProps}
+            leftIcon={<HiOutlineUserPlus />}
+            onClick={handleFollowUser}
+          >
             Follow
           </Button>
         )}

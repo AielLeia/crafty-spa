@@ -24,12 +24,14 @@ describe('Profile followers view model', () => {
       username: 'Aboubaker',
       profilePicture: 'aboubaker.png',
       followersCount: 50,
+      isFollowedByAuthUser: false,
     });
     const asma = buildUser({
       id: 'asma-id',
       username: 'Asma',
       profilePicture: 'asma.png',
       followersCount: 50,
+      isFollowedByAuthUser: true,
     });
     const state = stateBuilder()
       .withFollowers({
@@ -51,6 +53,7 @@ describe('Profile followers view model', () => {
           profilePicture: 'asma.png',
           link: '/u/asma-id',
           followersCount: 50,
+          isFollowedByAuthUser: true,
         },
         {
           id: 'aboubaker-id',
@@ -58,6 +61,7 @@ describe('Profile followers view model', () => {
           profilePicture: 'aboubaker.png',
           link: '/u/aboubaker-id',
           followersCount: 50,
+          isFollowedByAuthUser: false,
         },
       ],
     });

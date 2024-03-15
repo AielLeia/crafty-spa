@@ -4,7 +4,7 @@ import {
 } from '@/libs/users/__tests__/users.fixture.ts';
 import { beforeEach, describe, test } from 'vitest';
 
-describe('Feature : Retrieving user information', () => {
+describe.only('Feature : Retrieving user information', () => {
   let usersFixture: UsersFixture;
 
   beforeEach(() => {
@@ -12,21 +12,27 @@ describe('Feature : Retrieving user information', () => {
   });
 
   test('Retrieving user profile information', async () => {
-    const asma = {
+    usersFixture.givenExistingRemoveUser({
       id: 'asma-id',
       username: 'Asma',
       profilePicture: 'asma.png',
       followingCount: 300,
       followersCount: 20,
-    };
-
-    usersFixture.givenExistingRemoveUser(asma);
+      isFollowedByAuthUser: false,
+    });
 
     const retrievingUser = usersFixture.whenRetrievingUser('asma-id');
 
     usersFixture.thenUserShouldBeLoading('asma-id');
 
     await retrievingUser;
-    usersFixture.thenRetrievedUserIs(asma);
+    usersFixture.thenRetrievedUserIs({
+      id: 'asma-id',
+      username: 'Asma',
+      profilePicture: 'asma.png',
+      followingCount: 300,
+      followersCount: 20,
+      isFollowedByAuthUser: false,
+    });
   });
 });

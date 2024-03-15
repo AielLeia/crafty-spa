@@ -7,7 +7,10 @@ import { Button, Center } from '@chakra-ui/react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { RelationshipGrid } from '@/components/profile/RelationshipGrid.tsx';
+import {
+  LoadingRelationshipGrid,
+  RelationshipGrid,
+} from '@/components/profile/RelationshipGrid.tsx';
 
 export const ProfileFollowing = () => {
   const { userId } = useParams() as { userId: string };
@@ -17,7 +20,7 @@ export const ProfileFollowing = () => {
 
   switch (viewModel.type) {
     case ProfileFollowingViewModelType.ProfileFollowingLoading:
-      return <p>Loading...</p>;
+      return <LoadingRelationshipGrid />;
     case ProfileFollowingViewModelType.ProfileFollowingLoaded:
       return (
         <>

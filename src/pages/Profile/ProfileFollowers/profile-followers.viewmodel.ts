@@ -38,6 +38,7 @@ export const createProfileFollowersViewModel =
             profilePicture: user.profilePicture,
             link: `/u/${user.id}`,
             followersCount: user.followersCount,
+            isFollowedByAuthUser: user.isFollowedByAuthUser,
           };
         })
         .filter(Boolean),

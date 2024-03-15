@@ -110,8 +110,8 @@ const reducer = createReducer(initialState, (builder) => {
     relationshipAdapter.addMany(
       state.users.relationships,
       action.payload.followers.map((follow) => ({
-        user: action.payload.of,
-        follow,
+        user: follow,
+        follow: action.payload.of,
       }))
     );
   });
@@ -136,8 +136,8 @@ const reducer = createReducer(initialState, (builder) => {
     relationshipAdapter.addMany(
       state.users.relationships,
       action.payload.following.map((follow) => ({
-        user: follow,
-        follow: action.payload.of,
+        user: action.payload.of,
+        follow: follow,
       }))
     );
   });

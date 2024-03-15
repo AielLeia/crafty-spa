@@ -26,4 +26,20 @@ export interface UserGateway {
   }): Promise<GetUserFollowingResponse>;
 
   getUser({ userId }: { userId: string }): Promise<GetUser>;
+
+  followUser({
+    userId,
+    followingId,
+  }: {
+    userId: string;
+    followingId: string;
+  }): Promise<void>;
+
+  unfollowUser({
+    userId,
+    followingId,
+  }: {
+    userId: string;
+    followingId: string;
+  }): Promise<void>;
 }

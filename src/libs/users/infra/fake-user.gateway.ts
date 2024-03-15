@@ -10,6 +10,32 @@ export class FakeUserGateway implements UserGateway {
   willRespondForGetUserFollowers = new Map<string, GetUserFollowersResponse>();
   willRespondForGetUserFollowing = new Map<string, GetUserFollowingResponse>();
   users = new Map<string, User>();
+  lastFollowedUserBy!: { userId: string; followingId: string };
+  lastUnfollowedUserBy!: { userId: string; followingId: string };
+
+  unfollowUser({
+    userId,
+    followingId,
+  }: {
+    userId: string;
+    followingId: string;
+  }): Promise<void> {
+    this.lastUnfollowedUserBy = { userId, followingId };
+
+    return Promise.resolve();
+  }
+
+  followUser({
+    userId,
+    followingId,
+  }: {
+    userId: string;
+    followingId: string;
+  }): Promise<void> {
+    this.lastFollowedUserBy = { userId, followingId };
+
+    return Promise.resolve();
+  }
 
   getUserFollowers({
     userId,

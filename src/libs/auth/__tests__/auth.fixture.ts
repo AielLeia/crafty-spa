@@ -5,9 +5,9 @@ import {
 
 export const createAuthFixture = ({
   builderProvider = stateBuilderProvider(),
-}: {
+}: Partial<{
   builderProvider: StatebuilderProvider;
-}) => {
+}> = {}) => {
   return {
     givenAuthenticatedUserIs(authUser: string) {
       builderProvider.setState((builder) => builder.withAuthUser(authUser));

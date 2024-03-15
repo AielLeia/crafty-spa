@@ -2,6 +2,7 @@ import { AppStore } from '@/libs/create-store.ts';
 import { Home } from '@/pages/Home';
 import { createHomeLoader } from '@/pages/Home/create-home-loader.ts';
 import { Login } from '@/pages/Login.tsx';
+import { Notifications } from '@/pages/Notifications';
 import { ProfileFollowers } from '@/pages/Profile/ProfileFollowers';
 import { createProfileFollowersLoader } from '@/pages/Profile/ProfileFollowers/create-profile-followers-loader.ts';
 import { ProfileFollowing } from '@/pages/Profile/ProfileFollowing';
@@ -35,6 +36,10 @@ export const createRouter = (
           path: 'home',
           loader: createHomeLoader({ store }),
           element: <Home />,
+        },
+        {
+          path: 'notifications',
+          element: <Notifications />,
         },
         {
           path: 'u/:userId',

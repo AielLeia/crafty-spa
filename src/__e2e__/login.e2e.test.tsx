@@ -34,7 +34,11 @@ describe('Login page', () => {
 
   test('Should redirect to home page when authentication has succeeded', async () => {
     const authGateway = new FakeAuthGateway();
-    authGateway.willSucceedForGoogleAuthForUser = 'Alice';
+    authGateway.willSucceedForGoogleAuthForUser = {
+      id: 'asma-id',
+      username: 'Asma',
+      profilePicture: 'asma.png',
+    };
     const store = createTestStore({ authGateway });
     const router = createRouter({ store });
 

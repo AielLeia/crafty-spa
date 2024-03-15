@@ -6,7 +6,7 @@ import {
 } from '@/pages/Profile/ProfileFollowers/profile-followers.viewmodel.ts';
 import { describe, expect, test } from 'vitest';
 
-describe('Profile followers view model', () => {
+describe('Profile followers view models', () => {
   test('User followers are loading', () => {
     const state = stateBuilder().withFollowersLoading({ of: 'Ismael' }).build();
     const profileFollowerViewModel = createProfileFollowersViewModel({

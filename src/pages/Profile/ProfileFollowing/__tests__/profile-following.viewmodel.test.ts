@@ -6,7 +6,7 @@ import {
 } from '@/pages/Profile/ProfileFollowing/profile-following.viewmodel.ts';
 import { describe, expect, test } from 'vitest';
 
-describe('Profile following view model', () => {
+describe('Profile following view models', () => {
   test('User following are loading', () => {
     const state = stateBuilder().withFollowingLoading({ of: 'Ismael' }).build();
     const profileFollowingViewModel = createProfileFollowingViewModel({

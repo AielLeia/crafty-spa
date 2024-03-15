@@ -1,5 +1,9 @@
 import { AuthUser } from '@/libs/auth/models/auth.gateway.ts';
 import { RootState } from '@/libs/create-store.ts';
+import {
+  Notification,
+  notificationAdapter,
+} from '@/libs/notifications/models/notification.entity.ts';
 import { rootReducer } from '@/libs/root-reducer.ts';
 import {
   Message,
@@ -62,6 +66,10 @@ const withNotLoadingUser = createAction<{ userId: string }>(
   'withNotLoadingUser'
 );
 const withLoadingUser = createAction<{ userId: string }>('withLoadingUser');
+const withNotificationNotLoading = createAction<void>(
+  'withNotificationNotLoading'
+);
+const withNotifications = createAction<Notification[]>('withNotifications');
 
 const initialState = rootReducer(
   undefined,
@@ -157,6 +165,14 @@ const reducer = createReducer(initialState, (builder) => {
   builder.addCase(withUsers, (state, action) => {
     usersAdapter.addMany(state.users.users, action.payload);
   });
+
+  builder.addCase(withNotificationNotLoading, (state) => {
+    state.notifications.loading = false;
+  });
+
+  builder.addCase(withNotifications, (state, action) => {
+    notificationAdapter.addMany(state.notifications, action.payload);
+  });
 });
 
 export const stateBuilder = (baseState = initialState) => {
@@ -186,6 +202,9 @@ export const stateBuilder = (baseState = initialState) => {
     withUsers: reduce(withUsers),
     withNotLoadingUser: reduce(withNotLoadingUser),
     withLoadingUser: reduce(withLoadingUser),
+    withNotificationNotLoading: () =>
+      reduce(withNotificationNotLoading)(undefined),
+    withNotifications: reduce(withNotifications),
     build(): RootState {
       return baseState;
     },

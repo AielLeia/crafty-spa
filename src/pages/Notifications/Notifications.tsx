@@ -7,7 +7,7 @@ export const Notifications = () => {
     {
       id: 'n1',
       imageUrl: 'https://picsum.photos/200?random=n1',
-      title: 'Last notification',
+      title: 'Last notifications',
       text: 'Coucou something happened !',
       occuredAt: 'Few seconds ago',
       read: false,
@@ -16,7 +16,7 @@ export const Notifications = () => {
     {
       id: 'n2',
       imageUrl: 'https://picsum.photos/200?random=n2',
-      title: 'First notification',
+      title: 'First notifications',
       text: 'Hello there !',
       occuredAt: '17 minutes ago',
       read: true,

@@ -3,6 +3,7 @@ import { Home } from '@/pages/Home';
 import { createHomeLoader } from '@/pages/Home/create-home-loader.ts';
 import { Login } from '@/pages/Login.tsx';
 import { Notifications } from '@/pages/Notifications';
+import { createNotificationLoader } from '@/pages/Notifications/create-notification-loader.ts';
 import { ProfileFollowers } from '@/pages/Profile/ProfileFollowers';
 import { createProfileFollowersLoader } from '@/pages/Profile/ProfileFollowers/create-profile-followers-loader.ts';
 import { ProfileFollowing } from '@/pages/Profile/ProfileFollowing';
@@ -39,6 +40,7 @@ export const createRouter = (
         },
         {
           path: 'notifications',
+          loader: createNotificationLoader({ store }),
           element: <Notifications />,
         },
         {

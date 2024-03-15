@@ -1,4 +1,8 @@
-export type AuthUser = string;
+export type AuthUser = {
+  id: string;
+  username: string;
+  profilePicture?: string;
+};
 
 export interface AuthGateway {
   authenticateWithGoogle(): Promise<AuthUser>;

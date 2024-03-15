@@ -6,18 +6,32 @@ import { describe, expect, test } from 'vitest';
 
 describe('Feature: Authentication with google', () => {
   test('Use can authenticate with google successfully', async () => {
-    givenAuthenticationWithGoogleWithSucceedForUser('Alice');
+    givenAuthenticationWithGoogleWithSucceedForUser({
+      id: 'asma-id',
+      username: 'Asma',
+      profilePicture: 'asma.png',
+    });
 
     await whenUserAuthenticateWithGoogle();
 
-    thenUserShouldBeAuthenticated({ authUser: 'Alice' });
+    thenUserShouldBeAuthenticated({
+      authUser: {
+        id: 'asma-id',
+        username: 'Asma',
+        profilePicture: 'asma.png',
+      },
+    });
   });
 });
 
 const authGateway = new FakeAuthGateway();
 const store = createTestStore({ authGateway });
 
-function givenAuthenticationWithGoogleWithSucceedForUser(user: string) {
+function givenAuthenticationWithGoogleWithSucceedForUser(user: {
+  id: string;
+  username: string;
+  profilePicture: string;
+}) {
   authGateway.willSucceedForGoogleAuthForUser = user;
 }
 
@@ -25,7 +39,11 @@ async function whenUserAuthenticateWithGoogle() {
   await store.dispatch(authenticateWithGoogle());
 }
 
-function thenUserShouldBeAuthenticated({ authUser }: { authUser: string }) {
+function thenUserShouldBeAuthenticated({
+  authUser,
+}: {
+  authUser: { id: string; username: string; profilePicture: string };
+}) {
   const expectedState = stateBuilder().withAuthUser(authUser).build();
   expect(store.getState()).toEqual(expectedState);
 }

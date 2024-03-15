@@ -1,3 +1,4 @@
+import { AuthUser } from '@/libs/auth/models/auth.gateway.ts';
 import { RootState } from '@/libs/create-store.ts';
 import { rootReducer } from '@/libs/root-reducer.ts';
 import {
@@ -17,7 +18,9 @@ import {
   UnknownAction,
 } from '@reduxjs/toolkit';
 
-const withAuthUser = createAction<{ userAuth: string }>('withAuthUser');
+const withAuthUser = createAction<{
+  userAuth: AuthUser | string;
+}>('withAuthUser');
 const withTimeline = createAction<Timeline>('withTimeline');
 const withLoadingTimelineOfUser = createAction<{ user: string }>(
   'withLoadingTimelineOfUser'
@@ -67,7 +70,16 @@ const initialState = rootReducer(
 
 const reducer = createReducer(initialState, (builder) => {
   builder.addCase(withAuthUser, (state, action) => {
-    state.auth.authUser = action.payload.userAuth;
+    const { userAuth } = action.payload;
+    if (typeof userAuth === 'string') {
+      state.auth.authUser = {
+        id: userAuth,
+        username: userAuth,
+      };
+      return;
+    }
+
+    state.auth.authUser = userAuth;
   });
 
   builder.addCase(withTimeline, (state, action) => {
@@ -154,7 +166,8 @@ export const stateBuilder = (baseState = initialState) => {
       stateBuilder(reducer(baseState, actionCreator(payload)));
 
   return {
-    withAuthUser: (userAuth: string) => reduce(withAuthUser)({ userAuth }),
+    withAuthUser: (userAuth: AuthUser | string) =>
+      reduce(withAuthUser)({ userAuth }),
     withTimeline: reduce(withTimeline),
     withLoadingTimelineOfUser: (user: string) =>
       reduce(withLoadingTimelineOfUser)({ user }),

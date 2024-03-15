@@ -1,15 +1,16 @@
+import { AuthUser } from '@/libs/auth/models/auth.gateway.ts';
 import { authenticateWithGithub } from '@/libs/auth/usecases/authenticated-with-github.usecase.ts';
 import { authenticateWithGoogle } from '@/libs/auth/usecases/authenticated-with-google.usecase.ts';
 import { RootState } from '@/libs/create-store.ts';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
 export type AuthState = {
-  authUser?: string;
+  authUser?: AuthUser;
 };
 
-export const userAuthenticated = createAction<{ authUser: string }>(
-  'auth/userAuthenticated'
-);
+export const userAuthenticated = createAction<{
+  authUser: AuthUser;
+}>('auth/userAuthenticated');
 
 export const reducer = createReducer<AuthState>(
   {
@@ -33,4 +34,5 @@ export const reducer = createReducer<AuthState>(
 export const selectIsUserAuthenticated = (state: RootState) =>
   state.auth.authUser !== undefined;
 
-export const selectAuthUser = (state: RootState) => state.auth.authUser ?? '';
+export const selectAuthUserId = (state: RootState) =>
+  state.auth.authUser?.id ?? '';

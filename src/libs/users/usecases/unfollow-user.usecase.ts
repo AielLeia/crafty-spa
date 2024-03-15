@@ -1,4 +1,4 @@
-import { selectAuthUser } from '@/libs/auth/reducer.ts';
+import { selectAuthUserId } from '@/libs/auth/reducer.ts';
 import { createAppAsyncThunk } from '@/libs/create-app-thunk.ts';
 import { createAction } from '@reduxjs/toolkit';
 
@@ -17,7 +17,7 @@ export const unfollowUser = createAppAsyncThunk(
     params: UnfollowUserParams,
     { extra: { userGateway }, getState, dispatch }
   ) => {
-    const authUserId = selectAuthUser(getState());
+    const authUserId = selectAuthUserId(getState());
     dispatch(
       unfollowUserPending({
         userId: authUserId,

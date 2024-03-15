@@ -8,10 +8,20 @@ describe('On auth state change listener', () => {
     const authGateway = new FakeAuthGateway();
     const store = createTestStore({ authGateway });
 
-    authGateway.simulateAuthStateChanged('Alice');
+    authGateway.simulateAuthStateChanged({
+      id: 'asma-id',
+      username: 'Asma',
+      profilePicture: 'asma.png',
+    });
 
     expect(store.getActions()).toContainEqual(
-      userAuthenticated({ authUser: 'Alice' })
+      userAuthenticated({
+        authUser: {
+          id: 'asma-id',
+          username: 'Asma',
+          profilePicture: 'asma.png',
+        },
+      })
     );
   });
 });

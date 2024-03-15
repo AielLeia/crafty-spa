@@ -1,9 +1,9 @@
 import { AuthGateway, AuthUser } from '@/libs/auth/models/auth.gateway.ts';
 
 export class FakeAuthGateway implements AuthGateway {
-  willSucceedForGoogleAuthForUser!: string;
+  willSucceedForGoogleAuthForUser!: AuthUser;
 
-  willSucceedForGithubAuthForUser!: string;
+  willSucceedForGithubAuthForUser!: AuthUser;
 
   onAuthStateChangedListener!: (authUser: AuthUser) => void;
 
@@ -29,7 +29,7 @@ export class FakeAuthGateway implements AuthGateway {
     this.onAuthStateChangedListener = listener;
   }
 
-  simulateAuthStateChanged(user: string) {
+  simulateAuthStateChanged(user: AuthUser) {
     this.onAuthStateChangedListener(user);
   }
 }
